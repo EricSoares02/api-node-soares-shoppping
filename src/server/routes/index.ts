@@ -7,4 +7,8 @@ router.get("/", (req, res) => {
   res.send("tá indo");
 });
 
-router.post("/produtos", ProdutoController.create);
+router.post("/produtos", ProdutoController.createBodyValidator,ProdutoController.create);
+router.get("/produtos",ProdutoController.getAll);
+router.put("/produtos/:id",ProdutoController.update);
+router.delete("/produtos/:id",ProdutoController.delet);
+router.get("/produtos/:id",ProdutoController.getById);
