@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PostsController, ProdutoController } from "../controllers";
+import { ProdutoController } from "../controllers";
 
 
 export const router = Router();
@@ -17,4 +17,4 @@ router.get("/produtos", ProdutoController.getAll);
 router.put("/produtos/:id", ProdutoController.update);
 router.delete("/produtos/:id", ProdutoController.delet);
 router.get("/produtos/:id", ProdutoController.getById);
-router.get("/teste", PostsController.getAll);
+router.get("/teste");

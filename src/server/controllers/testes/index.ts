@@ -1,7 +1,7 @@
-import * as getAll from "./teste";
+// import * as getAll from "./teste";
 
-export const PostsController={
+// export const PostsController={
 
-    ...getAll
+//     ...getAll
     
-    }
+//     }
