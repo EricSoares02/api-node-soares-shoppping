@@ -1,21 +1,10 @@
 import { Request, Response } from "express";
-import { IProduto } from "../../shared/model/Produto";
-
-
-
-// interface IQuery{
-
-// page?:number,
-// limit?: number,
-// filter?: string
-
-// }
+import { IParamsProps } from "../../shared/model/ParamsProduct";
 
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const getAll = async (req: Request<{}, {}, IProduto>, res: Response) => {
-  console.log(req.query);
+export const getAll = async (req: Request<IParamsProps>, res: Response) => {
+  console.log(req.params);
 
   res.send("nada maninho");
 };
-
