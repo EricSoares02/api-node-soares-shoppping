@@ -8,10 +8,10 @@ export const validation:TValidation = (field, schema) => async (req, res, next)=
 
     try {
         await schema.parse(req[field]);
-        res.send(`valitadion sucesss`);
-        return next();
+        console.log(`valitadion sucesss`);
+       next()
       } catch (error) {
-        res.status(400).send(`deu merda ioda${error}`);
+        res.status(400).send(`a paramater is required:${error}`);
       }
 
 }
