@@ -6,4 +6,5 @@ export interface IQueryProps {
   page?: number;
   limit?: number;
   query?: string;
+  filter?: string;
 }
