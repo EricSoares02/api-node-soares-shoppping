@@ -12,11 +12,11 @@ export async function updateProductService(
     case "updateOne":
       try {
         connect();
-        // pegando os dados do antigo produto para apresentar 
+        // pegando os dados do antigo produto para apresentar
         const oldProductData = await prisma.product.findUnique({
           where: { id: updateProduct.id },
         });
-        //atualizando o produto
+        //atualizando o produto pelo id
         await prisma.product.update({
           where: {
             id: updateProduct.id,
@@ -39,6 +39,7 @@ export async function updateProductService(
     case "updateManyCategory":
       try {
         connect();
+        //atualizando uma categoria do banco
         await prisma.product.updateMany({
           where: {
              category:  {contains: updateProduct.oldCategory }
