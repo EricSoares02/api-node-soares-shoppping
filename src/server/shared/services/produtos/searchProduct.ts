@@ -6,16 +6,13 @@ export const SearchProducts = async (value: any) => {
   try {
     connect();
     const result = await prisma.product.findMany({
-
-      where:{
-        name:{
-
-          contains: value
-        }
-      }
-
+      where: {
+        name: {
+          contains: value,
+        },
+      },
     });
-    return result
+    return result;
   } catch (error) {
     console.log(error);
   } finally {
