@@ -13,16 +13,6 @@ const ProductSchema = z.object({
 });
 
 export const ArrayProductSchema = z.array(ProductSchema)
-// z.string().optional(), //id
-//   z.string().min(3), // name
-//   z.string(), //url
-//   z.number(), //price_in_cent
-//   z.string().optional(), //desc
-//   z.string() //category
-
-//type ArrayProducts = z.infer<typeof schemaArrayProducts>;
-
-
 
 export const createMany = async (req: Request, res: Response) => {
   
