@@ -1,4 +1,4 @@
-import { IProduto } from "./Produto";
+import { IUpdateProdutoProps } from "./Produto";
 
 export interface IParamsProps {
   id?: string;
@@ -11,9 +11,9 @@ export interface IQueryProps {
   filter?: string;
 }
 
-export interface IProdutoUpdateProps{
+export interface IUpdateProps{
+  updateType: string,
   id: string,
-  data: IProduto,
-  oldCategory?: string
+  data: IUpdateProdutoProps
 }
 
