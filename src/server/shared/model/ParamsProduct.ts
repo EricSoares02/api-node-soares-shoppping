@@ -14,6 +14,6 @@ export interface IQueryProps {
 export interface IUpdateProps{
   updateType: string,
   id: string,
-  data: IUpdateProdutoProps
+  data: IUpdateProdutoProps 
 }
 

@@ -10,7 +10,7 @@ router.post("/produtos",ProdutoController.createProductValidator,ProdutoControll
 // rota para criar mais de um produto
 router.post("/produtos/createmany", ProdutoController.createMany)
 // rota para atualizar um produto
-router.put("/produtos/:id", ProdutoController.update);
+router.patch("/produtos/:id", ProdutoController.update);
 // rota para deletar um produto
 router.delete("/produtos/:id", ProdutoController.delet);
 // rota para pegar todos os produtos 
