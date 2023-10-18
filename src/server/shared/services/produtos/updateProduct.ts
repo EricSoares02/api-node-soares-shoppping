@@ -1,31 +1,25 @@
-import { Response } from "express";
+import { Response, response } from "express";
 import connect from "../../../database";
 import { prisma } from "../prisma/prisma";
-import { IProdutoUpdateProps } from "../../model/ParamsProduct";
+import { IUpdateProps } from "../../model/ParamsProduct";
 
-export async function updateProductService(
-  updateType: string,
-  updateProduct: IProdutoUpdateProps,
-  res: Response
-) {
-  switch (updateType) {
+export async function updateProductService(oldProductData: any, updateProduct: IUpdateProps) {
+  
+  const res:Response=response ;
+  switch (updateProduct.updateType) {
     case "updateOne":
       try {
         connect();
-        // pegando os dados do antigo produto para apresentar
-        const oldProductData = await prisma.product.findUnique({
-          where: { id: updateProduct.id },
-        });
         //atualizando o produto pelo id
         await prisma.product.update({
           where: {
             id: updateProduct.id,
           },
-          data: updateProduct.data,
+          data:  updateProduct.data,
         });
         return res
           .json({
-            "update product": `${oldProductData}`,
+            "old product": `${oldProductData}`,
             "new product": `${updateProduct.data}`,
           })
           .status(201);
@@ -36,13 +30,13 @@ export async function updateProductService(
       }
 
       break;
-    case "updateManyCategory":
+    case "updateOneCategory":
       try {
         connect();
         //atualizando uma categoria do banco
         await prisma.product.updateMany({
           where: {
-             category:  {contains: updateProduct.oldCategory }
+             category:  {contains: oldProductData.category }
           },
           data: {category: updateProduct.data.category},
         });
