@@ -1,0 +1,90 @@
+import { IUpdateProps } from "../../../model/ParamsProduct";
+import { prisma } from "../../../services/prisma/prisma";
+import { updateProductService } from "../../../services/produtos/updateProduct";
+import { z } from "zod";
+
+// enum para tipo de atuaização. As mesmas se restringem à estes tipos, por isso é usado enum.
+enum EUpdateType {
+  updateOne = "updateOne",
+  updateOneCategory = "updateOneCategory",
+}
+// schema de validação do tipo de atuaização
+const updateTypeschema = z.nativeEnum(EUpdateType);
+// schema de validação do id
+const idSchema = z.string().length(24, "Must be exactly 24 characters long");
+// schema de validação para a antiga categoria
+const OldCategory = z.string().toLowerCase();
+// schema de validação do produto passado
+const productSchema = z.object({
+  name: z.string(),
+  url_img: z.string(),
+  price_in_cent: z.number().positive(),
+  category: z.string().toLowerCase(),
+  desc: z.string().optional(),
+});
+// schema validação para produto onde category é obrigatório.
+const PartialProduct = productSchema.partial({
+  name: true,
+  price_in_cent: true,
+  url_img: true,
+  category: true,
+});
+// schema validação para onde os elemento obrigatórios podem vir nulos .
+const PartialProductCategory = productSchema.partial({
+  name: true,
+  price_in_cent: true,
+  url_img: true,
+});
+// middleware com funções de verificação e regras de negócio
+export async function UpdateMiddleWare(value: IUpdateProps) {
+  //recebendo os dados por props
+  const { id, data, updateType } = value;
+  //validando o tipo de atualização (updateType)
+  updateTypeschema.parse(updateType);
+  // pegando os dados do antigo produto para apresentar
+  const oldProduct = await prisma.product.findUnique({
+    where: { id: id },
+  });
+
+  // verificando se o antigo produto é diferente de null ou undefined
+  if (oldProduct != null && oldProduct != undefined) {
+    switch (updateType) {
+      case "updateOne":
+        // validando o id passado por props
+        idSchema.parse(id);
+        //validação do antingo produto
+        productSchema.parse(oldProduct);
+        //validação do novo produto
+        PartialProduct.parse(data);
+        //verificação de propriedades vazias que continuarão iguais as antigas
+        if (data.category === "") {
+          data.category = oldProduct.category;
+        }
+        if (data.name === "") {
+          data.name = oldProduct.name;
+        }
+        if (data.price_in_cent === 1) {
+          data.price_in_cent = oldProduct.price_in_cent;
+        }
+        if (data.url_img === "") {
+          data.url_img = oldProduct.url_img;
+        }
+        value.data = data
+        updateProductService(oldProduct, value);
+
+        break;
+      // atualizar o nome de uma categoria inteira
+      case "updateOneCategory":
+        //validação de categoria. verificando se a string categoria é válida
+        OldCategory.parse(oldProduct.category);
+        //validação de produto. verificando se o valor de categoria existe e é válido
+        PartialProductCategory.parse(data);
+        //chamando product update service
+        updateProductService(oldProduct, value);
+        break;
+      default:
+        console.log("algo deu errado");
+        break;
+    }
+  }
+}
