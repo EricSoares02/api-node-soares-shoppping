@@ -11,9 +11,8 @@ export interface IQueryProps {
   filter?: string;
 }
 
-export interface IUpdateProps{
-  updateType: string,
-  id: string,
-  data: IUpdateProdutoProps 
+export interface IUpdateProps {
+  updateType: string;
+  id: string;
+  data: IUpdateProdutoProps;
 }
-

@@ -1,11 +1,13 @@
 import { Response } from "express";
 import connect from "../../../database";
 import { prisma } from "../prisma/prisma";
-import { IUpdateProps } from "../../model/ParamsProduct";
+import { IUpdateProps } from "../../model/product/ParamsProduct";
 
-export async function updateProductService(oldProductData: any, updateProduct: IUpdateProps, res:Response) {
-  
-  
+export async function updateProductService(
+  oldProductData: any,
+  updateProduct: IUpdateProps,
+  res: Response
+) {
   switch (updateProduct.updateType) {
     case "updateOne":
       try {
@@ -15,13 +17,12 @@ export async function updateProductService(oldProductData: any, updateProduct: I
           where: {
             id: updateProduct.id,
           },
-          data:  {
-            name:updateProduct.data.name,
+          data: {
+            name: updateProduct.data.name,
             category: updateProduct.data.category,
             desc: updateProduct.data.desc,
             price_in_cent: updateProduct.data.price_in_cent,
             url_img: updateProduct.data.url_img,
-          
           },
         });
         return res
@@ -43,9 +44,9 @@ export async function updateProductService(oldProductData: any, updateProduct: I
         //atualizando uma categoria do banco
         await prisma.product.updateMany({
           where: {
-             category:  {contains: oldProductData.category }
+            category: { contains: oldProductData.category },
           },
-          data: {category: updateProduct.data.category},
+          data: { category: updateProduct.data.category },
         });
       } catch (error) {
         res.json({ message: "internal error" }).status(500);
@@ -55,7 +56,7 @@ export async function updateProductService(oldProductData: any, updateProduct: I
 
       break;
     default:
-        res.send("error: updateType must be updateManyCategory or updateOne ")
+      res.send("error: updateType must be updateManyCategory or updateOne ");
       break;
   }
 }

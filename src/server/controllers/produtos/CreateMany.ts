@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { validation } from "../../shared/middleware";
 import { createManyProductsService } from "../../shared/services/produtos/createManyProducts";
-import { IProduto } from "../../shared/model/Produto";
+import { IProduto } from "../../shared/model/product/Produto";
 
 const ProductSchema = z.object({
   name: z.string().min(3),
@@ -12,17 +12,17 @@ const ProductSchema = z.object({
   category: z.string(),
 });
 
-export const ArrayProductSchema = z.array(ProductSchema)
+export const ArrayProductSchema = z.array(ProductSchema);
 
 export const createMany = async (req: Request, res: Response) => {
-  
   const P: Array<IProduto> = req.body.products;
 
   const createManyProductsValidator = validation(
-  "body",
-  ArrayProductSchema.safeParse(P));
+    "body",
+    ArrayProductSchema.safeParse(P)
+  );
 
- await createManyProductsValidator
+  await createManyProductsValidator;
 
   try {
     createManyProductsService(res, P);

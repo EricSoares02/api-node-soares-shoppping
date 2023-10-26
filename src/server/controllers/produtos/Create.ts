@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IProduto } from "../../shared/model/Produto";
+import { IProduto } from "../../shared/model/product/Produto";
 import { z } from "zod";
 import { validation } from "../../shared/middleware";
 import { createProductService } from "../../shared/services/produtos/createProduct";

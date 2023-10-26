@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IParamsProps } from "../../shared/model/ParamsProduct";
+import { IParamsProps } from "../../shared/model/product/ParamsProduct";
 import { TestingId } from "../../shared/middleware/products/DeleteProduct";
 import { deleteProductsService } from "../../shared/services/produtos/deleteProduct";
 
