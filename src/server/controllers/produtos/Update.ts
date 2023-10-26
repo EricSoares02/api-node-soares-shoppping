@@ -1,8 +1,8 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { IParamsProps, IUpdateProps } from "../../shared/model/ParamsProduct";
 import { UpdateMiddleWare } from "../../shared/middleware/products/udpate/UpdateProdutcs";
 
-export const update = async (req: Request<IParamsProps, "", IUpdateProps>) => {
+export const update = async (req: Request<IParamsProps, "", IUpdateProps>, res:Response) => {
   const id = req.params.id || "";
   const updateType = req.body.updateType;
   const data = {
@@ -16,5 +16,5 @@ export const update = async (req: Request<IParamsProps, "", IUpdateProps>) => {
 
   const dataUpdate = { id, data, updateType };
 
-  UpdateMiddleWare(dataUpdate);
+  UpdateMiddleWare(dataUpdate, res);
 };

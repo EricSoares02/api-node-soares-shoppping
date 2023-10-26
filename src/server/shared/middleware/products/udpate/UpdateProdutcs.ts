@@ -1,3 +1,4 @@
+import { Response } from "express";
 import { IUpdateProps } from "../../../model/ParamsProduct";
 import { prisma } from "../../../services/prisma/prisma";
 import { updateProductService } from "../../../services/produtos/updateProduct";
@@ -36,7 +37,7 @@ const PartialProductCategory = productSchema.partial({
   url_img: true,
 });
 // middleware com funções de verificação e regras de negócio
-export async function UpdateMiddleWare(value: IUpdateProps) {
+export async function UpdateMiddleWare(value: IUpdateProps, res:Response) {
   //recebendo os dados por props
   const { id, data, updateType } = value;
   //validando o tipo de atualização (updateType)
@@ -66,11 +67,15 @@ export async function UpdateMiddleWare(value: IUpdateProps) {
         if (data.price_in_cent === 1) {
           data.price_in_cent = oldProduct.price_in_cent;
         }
+        if (data.desc === '') {
+          data.desc = 'esta descrição é meramente ilustrativa, nada escrito aqui deve ser considerado. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo reprehenderit sequi aspernatur laboriosam eligendi asperiores a dignissimos iste, quasi nisi. Impedit iusto, velit amet saepe odit sint eveniet laboriosam incidunt!Lorem ipsum dolor sit amet consectetur adipisicing elit'
+        }
         if (data.url_img === "") {
           data.url_img = oldProduct.url_img;
         }
         value.data = data
-        updateProductService(oldProduct, value);
+        console.log(value.data)
+        updateProductService(oldProduct, value, res);
 
         break;
       // atualizar o nome de uma categoria inteira
@@ -80,7 +85,7 @@ export async function UpdateMiddleWare(value: IUpdateProps) {
         //validação de produto. verificando se o valor de categoria existe e é válido
         PartialProductCategory.parse(data);
         //chamando product update service
-        updateProductService(oldProduct, value);
+        updateProductService(oldProduct, value, res);
         break;
       default:
         console.log("algo deu errado");

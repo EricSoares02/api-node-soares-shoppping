@@ -1,11 +1,11 @@
-import { Response, response } from "express";
+import { Response } from "express";
 import connect from "../../../database";
 import { prisma } from "../prisma/prisma";
 import { IUpdateProps } from "../../model/ParamsProduct";
 
-export async function updateProductService(oldProductData: any, updateProduct: IUpdateProps) {
+export async function updateProductService(oldProductData: any, updateProduct: IUpdateProps, res:Response) {
   
-  const res:Response=response ;
+  
   switch (updateProduct.updateType) {
     case "updateOne":
       try {
@@ -15,7 +15,14 @@ export async function updateProductService(oldProductData: any, updateProduct: I
           where: {
             id: updateProduct.id,
           },
-          data:  updateProduct.data,
+          data:  {
+            name:updateProduct.data.name,
+            category: updateProduct.data.category,
+            desc: updateProduct.data.desc,
+            price_in_cent: updateProduct.data.price_in_cent,
+            url_img: updateProduct.data.url_img,
+          
+          },
         });
         return res
           .json({
