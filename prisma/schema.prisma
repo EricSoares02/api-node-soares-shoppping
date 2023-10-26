@@ -16,31 +16,34 @@ model Product{
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
 name String
-url_img String
+url_img String[]
 price_in_cent Int
 desc String?
 category String
-
+options String[]
+store String
 }
 
 model User{
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
-name String
+firstName String
+midName String?
+lastName String
+nickName String @unique
 email String @unique
-password String 
-requests Request[]
+password String
+photo String
 
 }
 
-model Request{
+model Store{
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
-state String @default("processando")
-date DateTime @default(now())
-delivered DateTime? 
-payer User? @relation(fields: [payerId], references: [id])
-payerId String? @db.ObjectId
+firstName String @unique
+email String @unique
+password String
+photo String
 
 }
 
