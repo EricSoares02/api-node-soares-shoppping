@@ -51,7 +51,7 @@ name String
 email String @unique
 password String 
 url_img String
-cnpj Int
+cnpj Int @unique
 desc String?
 
 }
