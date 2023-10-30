@@ -20,15 +20,15 @@ enum ECategoryModaType {
     esporte_praia = "esporte de praia",
   }
   enum ECategoryInformaticaType {
-    notebook = "camisa",
-    processador = "tenis",
-    ram = "bola",
-    placa_mae = "esporte de quadra",
-    monitor = "luta",
-    placa_Dvideo = "esporte aquatico",
-    mouse_teclado = "esporte de praia",
+    notebook = "notebook",
+    processador = "processador",
+    ram = "ram",
+    placa_mae = "placa mae",
+    monitor = "monitor",
+    placa_Dvideo = "placa de video",
+    mouse_teclado = "mouse teclado",
     tablet = "tablet",
-    kit_hardware = "kit_hardware",
+    kit_hardware = "kit hardware",
   }
   
   enum ECategoryBebidaType {

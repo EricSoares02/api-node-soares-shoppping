@@ -21,9 +21,9 @@ enum ECategoryTypes {
     desc: z.string().optional(),
     category: z.nativeEnum(ECategoryTypes),
     // store: IStore;
-    options: z.string().array(),
+    options: z.string().array().max(8, "8 é o número máximo de opções"),
     //comments: z.string().array().optional(),
-    stars: z.number().optional(),
+    stars: z.number().lte(5, "as estrelas não podem ser maior que 5 por user").nonnegative("as estrelas devem ser um número positivo ou 0").optional(),
     review_numbers: z.number().optional(),
   });
 

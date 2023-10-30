@@ -1,5 +1,3 @@
-import { IStore } from "../store/Store";
-
 interface IComments {
   id: string;
   authorId: string;
@@ -15,7 +13,7 @@ export interface IProduto {
   desc?: string;
   category: string;
   subCategory: string;
-  store: IStore;
+  store: string;
   options: string[];
   comments: IComments;
   stars?: number;

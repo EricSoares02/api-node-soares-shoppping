@@ -12,7 +12,6 @@ export const createProductService = async (res: Response, data: IProduto) => {
     store,
     subCategory,
     url_img,
-    comments,
     desc,
     stars,
     review_numbers,
@@ -31,31 +30,12 @@ export const createProductService = async (res: Response, data: IProduto) => {
         stars: stars,
         url_img: url_img,
         review_numbers: review_numbers,
-        store: {
-          create: {
-            name: store.name,
-            cnpj: store.cnpj,
-            email: store.email,
-            password: store.password,
-            url_img: store.url_img,
-            desc: store.desc,
-          },
+        storeId: store,
         },
-        comments: {
-          create: {
-            authorId: comments?.authorId,
-            title: comments.title 
-          },
-        },
-      },
-      include: {
-        store: true,
-        comments: true,
-      },
     });
     return res.json(`created product:${data.name}`).status(201);
   } catch (error) {
-    res.json({ message: "internal error" }).status(500);
+    res.json({ message: "internal Prisma error" }).status(500);
   } finally {
     await prisma.$disconnect();
   }
