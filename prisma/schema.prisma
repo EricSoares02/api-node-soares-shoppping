@@ -16,31 +16,42 @@ model Product{
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
 name String
-url_img String
+url_img String[]
 price_in_cent Int
 desc String?
 category String
+subCategory String
+options String[]
+store Store @relation(fields: [storeId], references: [id])
+storeId String @db.ObjectId
+comments Comments[]
+stars Int @default(0)
+review_numbers Int @default(0)
 
 }
 
 model User{
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
-name String
+first_name String
+last_name String
+url_img String?
 email String @unique
 password String 
 requests Request[]
+comments Comments[]
 
 }
 
-model Request{
+model Comments {
 
 id String @id @default(auto()) @map("_id") @db.ObjectId
-state String @default("processando")
-date DateTime @default(now())
-delivered DateTime? 
-payer User? @relation(fields: [payerId], references: [id])
-payerId String? @db.ObjectId
+author   User   @relation(fields: [authorId], references: [id])
+authorId String @db.ObjectId
+product_commented  Product @relation(fields: [product_commentedId], references: [id])
+product_commentedId  String @db.ObjectId
+title String
+
 
 }
 
@@ -53,5 +64,16 @@ password String
 url_img String
 cnpj Int @unique
 desc String?
+products Product[]
+}
+
+model Request{
+
+id String @id @default(auto()) @map("_id") @db.ObjectId
+state String @default("processando")
+date DateTime @default(now())
+delivered DateTime? 
+payer User? @relation(fields: [payerId], references: [id])
+payerId String? @db.ObjectId
 
 }

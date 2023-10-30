@@ -8,7 +8,7 @@ export const router = Router();
 // rota para pegar produtos por especificos -- rota de search
 router.get("/search/value?", ProdutoController.search);
 // rota para criar um produto
-router.post("/produtos",ProdutoController.createProductValidator,ProdutoController.create);
+router.post("/produtos",ProdutoController.create);
 // rota para criar mais de um produto
 router.post("/produtos/createmany", ProdutoController.createMany)
 // rota para atualizar um produto
