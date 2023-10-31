@@ -13,7 +13,6 @@ export const createProductService = async (res: Response, data: IProduto) => {
     subCategory,
     url_img,
     desc,
-    review_numbers,
   } = data;
 
   try {
