@@ -27,7 +27,6 @@ export const createProductService = async (res: Response, data: IProduto) => {
         desc: desc,
         options: options,
         url_img: url_img,
-        review_numbers: review_numbers,
         storeId: store,
         },
     });
