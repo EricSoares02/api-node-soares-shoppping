@@ -14,7 +14,7 @@ export async function VerifyStore(data: IProduto, res: Response) {
     res.send("passou para o service"+ verify); 
     if (verify) {
        createProductService(res, data)  
-    } else{
+    } else {
       res.send(`this store cannot exist: ${data.store}`);
     }
   } catch (error) {
