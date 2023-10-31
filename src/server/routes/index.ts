@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ProdutoController, StoreController } from "../controllers";
+import { CommentController, ProdutoController, StoreController } from "../controllers";
 
 export const router = Router();
 
@@ -31,6 +31,11 @@ router.post("/user");
 
 
 
-// ROTAS PARA USER
+// ROTAS PARA STORE
 // rota para criar store
 router.post("/store", StoreController.create)
+
+
+// ROTAS PARA COMMENT
+// rota para criar store
+router.post("/comment", CommentController.create)
