@@ -3,6 +3,7 @@ interface IComments {
   authorId: string;
   product_commentedId: string;
   title: string;
+  stars?: number;
 }
 
 export interface IProduto {
@@ -15,8 +16,7 @@ export interface IProduto {
   subCategory: string;
   store: string;
   options: string[];
-  comments: IComments;
-  stars?: number;
+  comments: IComments[];
   review_numbers?: number;
 }
 // inserir em produto old product, store e options e tranformar url_img em array

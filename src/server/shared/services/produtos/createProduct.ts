@@ -13,7 +13,6 @@ export const createProductService = async (res: Response, data: IProduto) => {
     subCategory,
     url_img,
     desc,
-    stars,
     review_numbers,
   } = data;
 
@@ -27,7 +26,6 @@ export const createProductService = async (res: Response, data: IProduto) => {
         subCategory: subCategory,
         desc: desc,
         options: options,
-        stars: stars,
         url_img: url_img,
         review_numbers: review_numbers,
         storeId: store,
