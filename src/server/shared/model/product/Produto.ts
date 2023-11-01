@@ -7,6 +7,18 @@ export interface IComments {
 
 }
 
+export enum ECategoryTypes {
+  esporte = "esporte",
+  informatica = "informatica",
+  celular = "celular",
+  bebida = "bebida",
+  eletrodomestico = "eletrodomestico",
+  ferramenta = "ferramenta",
+  brinquedo = "brinquedo",
+  moda = "moda",
+  automovel = "automovel",
+}
+
 export interface IProduto {
   id: string;
   name: string;
