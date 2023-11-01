@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CommentController, ProdutoController, StoreController } from "../controllers";
+import { CommentController, ProdutoController, StoreController, UserController } from "../controllers";
 
 export const router = Router();
 
@@ -27,7 +27,9 @@ router.get("/teste");
 
 // ROTAS PARA USER
 // rota para criar usuario
-router.post("/user");
+router.post("/user", UserController.create);
+// rote para logar usuario
+router.post("/login",)
 
 
 
