@@ -18,10 +18,12 @@ const OldCategory = z.string().toLowerCase();
 // schema de validação do produto passado
 const productSchema = z.object({
   name: z.string(),
-  url_img: z.string(),
+  url_img: z.string().array(),
   price_in_cent: z.number().positive(),
   category: z.string().toLowerCase(),
   desc: z.string().optional(),
+  subCategory: z.string(),
+  options: z.string().array()
 });
 // schema validação para produto onde category é obrigatório.
 const PartialProduct = productSchema.partial({
@@ -29,6 +31,9 @@ const PartialProduct = productSchema.partial({
   price_in_cent: true,
   url_img: true,
   category: true,
+  subCategory: true,
+  options: true
+
 });
 // schema validação para onde os elemento obrigatórios podem vir nulos .
 const PartialProductCategory = productSchema.partial({
@@ -71,8 +76,14 @@ export async function UpdateMiddleWare(value: IUpdateProps, res: Response) {
           data.desc =
             "esta descrição é meramente ilustrativa, nada escrito aqui deve ser considerado. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo reprehenderit sequi aspernatur laboriosam eligendi asperiores a dignissimos iste, quasi nisi. Impedit iusto, velit amet saepe odit sint eveniet laboriosam incidunt!Lorem ipsum dolor sit amet consectetur adipisicing elit";
         }
-        if (data.url_img === "") {
-          data.url_img = oldProduct.url_img;
+        if (data.url_img?.length===0) {
+          data.url_img = oldProduct.url_img
+        }
+        if(data.subCategory===''){
+          data.subCategory=oldProduct.subCategory
+        }
+        if(data.options?.length===0){
+          data.options=oldProduct.options
         }
         value.data = data;
         console.log(value.data);
