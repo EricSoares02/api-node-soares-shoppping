@@ -9,13 +9,13 @@ export async function VerifyStore(data: IProduto, res: Response) {
   try {
     connect();
     await prisma.store.findFirst({
-      where: { id: data.store },
+      where: { id: data.storeId },
     }).then((response)=> response ? verify = true : verify = false)
     res.send("passou para o service"+ verify); 
     if (verify) {
        createProductService(res, data)  
     } else {
-      res.send(`this store cannot exist: ${data.store}`);
+      res.send(`this store cannot exist: ${data.storeId}`);
     }
   } catch (error) {
     res.json({ message: "internal verify error" }).status(500);

@@ -9,7 +9,7 @@ export const createProductService = async (res: Response, data: IProduto) => {
     name,
     options,
     price_in_cent,
-    store,
+    storeId,
     subCategory,
     url_img,
     desc,
@@ -26,7 +26,7 @@ export const createProductService = async (res: Response, data: IProduto) => {
         desc: desc,
         options: options,
         url_img: url_img,
-        storeId: store,
+        storeId: storeId,
         },
     });
     return res.json(`created product:${data.name}`).status(201);
