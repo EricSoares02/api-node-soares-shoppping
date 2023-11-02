@@ -24,7 +24,7 @@ export const CreateManyProductsMiddleware = async (
       try {
         connect();
         const response = await prisma.store.findFirst({
-          where: { id: product.store },
+          where: { id: product.storeId },
         });
 
         if (!response) {
