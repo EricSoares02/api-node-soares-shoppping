@@ -4,8 +4,8 @@ import connect from "../../../database";
 import { IProduto } from "../../model/product/Produto";
 
 export const createManyProductsService = async (
+  P: Array<IProduto>,
   res: Response,
-  P: Array<IProduto>
 ) => {
   try {
     connect();

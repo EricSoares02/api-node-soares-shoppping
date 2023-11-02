@@ -1,32 +1,27 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { validation } from "../../shared/middleware";
-import { createManyProductsService } from "../../shared/services/produtos/createManyProducts";
-import { IProduto } from "../../shared/model/product/Produto";
+import { ECategoryTypes, IProduto } from "../../shared/model/product/Produto";
+import { CreateManyProductsMiddleware } from "../../shared/middleware/products/create/CreateManyProducts";
 
-const ProductSchema = z.object({
+
+const ArrayProductSchema = z.array(z.object({
   name: z.string().min(3),
-  url_img: z.string(),
-  price_in_cent: z.number(),
+  url_img: z.string().array(),
+  price_in_cent: z.number().positive(),
   desc: z.string().optional(),
-  category: z.string(),
-});
+  category: z.nativeEnum(ECategoryTypes),
+  options: z.string().array().max(8, "8 é o número máximo de opções"),
+}))
 
-export const ArrayProductSchema = z.array(ProductSchema);
+
 
 export const createMany = async (req: Request, res: Response) => {
   const P: Array<IProduto> = req.body.products;
 
-  const createManyProductsValidator = validation(
-    "body",
-    ArrayProductSchema.safeParse(P)
-  );
+  ArrayProductSchema.parse(P);
 
-  await createManyProductsValidator;
 
-  try {
-    createManyProductsService(res, P);
-  } catch (error) {
-    console.log(error);
-  }
+  CreateManyProductsMiddleware(P, res)
+
+  
 };
