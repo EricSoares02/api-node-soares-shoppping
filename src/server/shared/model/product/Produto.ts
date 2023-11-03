@@ -29,7 +29,7 @@ export interface IProduto {
   subCategory: string;
   storeId: string;
   options: string[];
-  comments: IComments[];
+  comments?: IComments[];
 }
 // inserir em produto old product, store e options e tranformar url_img em array
 export interface IUpdateProdutoProps {

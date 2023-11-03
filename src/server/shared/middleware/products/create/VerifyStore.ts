@@ -4,21 +4,23 @@ import { prisma } from "../../../services/prisma/prisma";
 import { createProductService } from "../../../services/produtos/createProduct";
 import { IProduto } from "../../../model/product/Produto";
 
-export async function VerifyStore(data: IProduto, res: Response) {
+
+export async function VerifyStore(data: IProduto, res: Response, storeId: string) {
  let verify: boolean = false
+ let ide:string = ''
+ 
   try {
     connect();
-    await prisma.store.findFirst({
-      where: { id: data.storeId },
-    }).then((response)=> response ? verify = true : verify = false)
-    res.send("passou para o service"+ verify); 
+    await prisma.store.findUnique({
+      where: { id: storeId },
+    }).then((response)=> response ? ide = response.id : '').then((response)=> response ? verify = true : verify = false)
     if (verify) {
-       createProductService(res, data)  
+       createProductService(res, data, ide )  
     } else {
       res.send(`this store cannot exist: ${data.storeId}`);
     }
   } catch (error) {
-    res.json({ message: "internal verify error" }).status(500);
+    res.json({ message: "internal verify error", error }).status(500);
   } finally {
     await prisma.$disconnect();
   }

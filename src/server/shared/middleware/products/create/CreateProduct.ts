@@ -5,14 +5,14 @@ import { ProductValidation } from "./ProductValidation";
 import { VerifyStore } from "./VerifyStore";
 
 
-export function CreateProductMiddleware(res: Response, data: IProduto) {
+export function CreateProductMiddleware(res: Response, data: IProduto, storeId:string) {
  
     
    
     ProductValidation(data)
     const datavalidation = new CategoryMidlleware(data.category, data.subCategory, res);
     datavalidation.validationCategoryAndSubCategory();
-    VerifyStore(data, res)
+    VerifyStore(data, res, storeId)
       
 
 }

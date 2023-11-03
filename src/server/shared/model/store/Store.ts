@@ -7,6 +7,6 @@ export interface IStore{
     password: string; 
     url_img: string;
     cnpj: number;
-    desc?: string;
+    desc?: string | null;
 
 }

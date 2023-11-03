@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { CommentController, ProdutoController, StoreController, UserController } from "../controllers";
+import { UserLoginController } from "../controllers/users/login";
 
 export const router = Router();
 
@@ -8,11 +9,11 @@ export const router = Router();
 // rota para pegar produtos por especificos -- rota de search
 router.get("/search/value?", ProdutoController.search);
 // rota para criar um produto
-router.post("/produtos",ProdutoController.create);
+router.post("/produtos/:storeId",ProdutoController.create);
 // rota para criar mais de um produto
 router.post("/produtos/createmany", ProdutoController.createMany)
 // rota para atualizar um produto
-router.patch("/produtos/:id", ProdutoController.update);
+router.patch("/produtosup/:id", ProdutoController.update);
 // rota para deletar um produto
 router.delete("/produtos/:id", ProdutoController.delet);
 // rota para pegar todos os produtos 
@@ -29,7 +30,7 @@ router.get("/teste");
 // rota para criar usuario
 router.post("/user", UserController.create);
 // rote para logar usuario
-router.post("/login",)
+router.post("/login", UserLoginController.login)
 
 
 

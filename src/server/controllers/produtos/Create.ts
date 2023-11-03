@@ -4,5 +4,5 @@ import { CreateProductMiddleware } from "../../shared/middleware/products/create
 
 export const create = async (req: Request, res: Response) => {
   
-  CreateProductMiddleware(res,req.body)
+  CreateProductMiddleware(res,req.body, req.params.storeId)
 };
