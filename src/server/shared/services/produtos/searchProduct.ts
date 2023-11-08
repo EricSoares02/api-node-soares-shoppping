@@ -7,9 +7,15 @@ export const SearchProducts = async (value: any) => {
     connect();
     const result = await prisma.product.findMany({
       where: {
-        name: {
-          contains: value,
-        },
+        OR: [ 
+          {
+            name: { contains: value },
+          },
+          {
+            category: { contains: value },
+          },
+          { subCategory: { contains: value } },
+        ],
       },
     });
     return result;
