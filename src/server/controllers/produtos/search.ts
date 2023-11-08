@@ -5,8 +5,8 @@ import { IQueryProps } from "../../shared/model/product/ParamsProduct";
 
 export const search = async (req: Request<IQueryProps>, res: Response) => {
   try {
-    const value = req.query.filter;
-    const result = await SearchProducts(value);
+    
+    const result = await SearchProducts(req.query.filter);
     voidGetCheck(result, res);
   } catch (error) {
     console.log(error);
