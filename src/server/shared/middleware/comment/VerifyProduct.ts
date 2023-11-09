@@ -1,21 +1,21 @@
 import { Response } from "express";
 import connect from "../../../database";
-import { IComments } from "../../model/product/Produto";
+import { IComments, ICommentsParams } from "../../model/product/Produto";
 import { prisma } from "../../services/prisma/prisma";
 import { CreateCommentService } from "../../services/comment/create/createComment";
 
-export async function VerifyProduct(comment:IComments, res:Response) {
+export async function VerifyProduct(commentquery:ICommentsParams,comment:IComments, res:Response) {
     let verify: boolean = false
     try {
       connect();
       await prisma.product.findFirst({
-        where: { id: comment.product_commentedId },
+        where: { id: commentquery.product },
       }).then((response)=> response ? verify = true : verify = false)
       res.send("passou para service"+ verify); 
       if (verify) {
-        CreateCommentService(comment, res)
+        CreateCommentService(commentquery,comment, res)
       } else {
-        res.send(`this user cannot exist: ${comment.authorId}`);
+        res.send(`this product cannot exist: ${commentquery.product}`);
       }
     } catch (error) {
       res.json({ message: "internal verify error" }).status(500);

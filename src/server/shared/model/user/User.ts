@@ -8,3 +8,7 @@ export interface IUser {
   //requests: Request[]
   //comments: Comments[]
 }
+export interface Authorized{
+
+  token:string
+}

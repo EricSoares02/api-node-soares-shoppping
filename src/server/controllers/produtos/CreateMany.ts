@@ -18,11 +18,11 @@ const ArrayProductSchema = z.array(z.object({
 
 export const createMany = async (req: Request, res: Response) => {
   const P: Array<IProduto> = req.body.products;
-
+  const storeId = req.params.storeId
   ArrayProductSchema.parse(P);
 
 
-  CreateManyProductsMiddleware(P, res)
+  CreateManyProductsMiddleware(P, res, storeId)
 
   
 };

@@ -6,6 +6,10 @@ export interface IComments {
   stars: number;
 
 }
+export interface ICommentsParams {
+  user: string;
+  product: string;
+}
 
 export enum ECategoryTypes {
   esporte = "esporte",

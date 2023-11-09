@@ -11,7 +11,7 @@ router.get("/search/value?", ProdutoController.search);
 // rota para criar um produto
 router.post("/produtos/:storeId",ProdutoController.create);
 // rota para criar mais de um produto
-router.post("/produtos/createmany", ProdutoController.createMany)
+router.post("/produtos/createmany/:storeId", ProdutoController.createMany)
 // rota para atualizar um produto
 router.patch("/produtosup/:id", ProdutoController.update);
 // rota para deletar um produto
@@ -29,6 +29,7 @@ router.get("/teste");
 // ROTAS PARA USER
 // rota para criar usuario
 router.post("/user", UserController.create);
+router.post("/getuser", UserController.getUser);
 // rote para logar usuario
 router.post("/login", UserLoginController.login)
 

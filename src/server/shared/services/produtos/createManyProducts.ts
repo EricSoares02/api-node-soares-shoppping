@@ -14,7 +14,7 @@ export const createManyProductsService = async (
     });
     return res.json(`created products sucessful`).status(201);
   } catch (error) {
-    res.json({ message: "internal error" }).status(500);
+    res.json({ message: "internal error SERVICE", error }).status(500);
   } finally {
     await prisma.$disconnect();
   }
