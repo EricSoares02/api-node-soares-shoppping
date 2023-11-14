@@ -1,12 +1,12 @@
 {
   "name": "api-soares-shopping",
   "version": "",
-  "main": "index.js",
+  "main": "server.js",
   "author": "Eric Soares",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon --exec ts-node ./src/index.ts",
+    "dev": "nodemon --exec ts-node ./src/server.ts",
     "test": "jest"
   },
   "devDependencies": {
