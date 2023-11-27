@@ -1,3 +1,4 @@
+import { Product } from "../../interfaces/IProduct";
 import { ProductRepository } from "../../repositories/product/ProductRepository";
 
 class ProductService {
@@ -25,8 +26,19 @@ class ProductService {
     return create
   }
 
+  public async executeUpdateProductRepositoy(newProduct: Product){
 
+    const update = await this.ProductRepository.update(newProduct);
 
+    return update;
+  }
+
+  public async executeGetByIdProductRepository(id:string){
+
+    const product = await this.ProductRepository.getById(id);
+    return product
+
+  }
 }
 
 
