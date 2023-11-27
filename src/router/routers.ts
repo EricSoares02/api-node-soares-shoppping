@@ -12,7 +12,7 @@ router.post("/produtos", product.validationProduct, product.create);
 // rota para criar mais de um produto
 router.post("/produtos/createmany/:storeId")
 // rota para atualizar um produto
-router.patch("/produtosup/:id");
+router.patch("/produtos", product.validationProduct, product.update);
 // rota para deletar um produto
 router.delete("/produtos/:id");
 // rota para pegar produtos por especificos -- rota de search
@@ -32,10 +32,8 @@ router.post("/login")
 
 
 // ROTAS PARA STORE
-
-
-// rota para criar store
 const store = new StoreController();
+// rota para criar store
 router.post("/store", store.validationStore, store.create)
 
 
