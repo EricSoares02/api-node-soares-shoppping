@@ -73,8 +73,7 @@ enum ECategoryModaType {
    
 
     constructor(private Product: Product) {
-      this.category;
-      this.subCategory;
+      this.Product
     }
 
     public validationCategoryAndSubCategory(next:NextFunction, res:Response) {
