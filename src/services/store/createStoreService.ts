@@ -27,6 +27,10 @@ class StoreService {
   return verify
 }
 
+public async executeGetStoreById(storeId:string){
+  const store = await this.StoreRepository.getById(storeId)
+  return store
+}
 }
 
 
