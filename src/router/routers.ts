@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { StoreController } from "../controller/store/createStore";
+import { ProductController } from "../controller/product/ProductController";
 
 
 export const router = Router();
 
 // ROTAS PARA PRODUTO
-
+const product = new ProductController()
 // rota para criar um produto
-router.post("/produtos/:storeId");
+router.post("/produtos", product.validationProduct, product.create);
 // rota para criar mais de um produto
 router.post("/produtos/createmany/:storeId")
 // rota para atualizar um produto
