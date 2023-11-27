@@ -23,6 +23,11 @@ export enum ECategoryTypes{
     automovel = "automovel",
 }
 
+
+export interface IProductParams{
+  id: string
+}
+
 export interface IProductRepositories {
   create(
     name: string,
