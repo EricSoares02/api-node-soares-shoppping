@@ -13,18 +13,21 @@ class ProductService {
     storeId: string,
     desc: string | null
   ) {
-    const create = await this.ProductRepository.create(
-      name,
-      url_img,
-      price_in_cent,
-      category,
-      subCategory,
-      options,
-      storeId,
-      desc
-    );
-    return create;
+
+    const create = await this.ProductRepository.create(name,
+        url_img,
+        price_in_cent,
+        category,
+        subCategory,
+        options,
+        storeId,
+        desc )
+    return create
   }
+
+
+
 }
+
 
 export { ProductService };
