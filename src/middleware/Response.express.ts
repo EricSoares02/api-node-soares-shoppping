@@ -20,4 +20,12 @@ class ResponseToCreated extends ResponseExpress{
     }
 }
 
-export {ResponseExpress, ResponseToCreated}
+
+class ResponseGet extends ResponseExpress{
+
+    
+    public res(res: Response<any, Record<string, any>>) {
+        return res.status(200).json({message:'successful',data: this.T})  
+    }
+}
+export {ResponseExpress, ResponseToCreated, ResponseGet}
