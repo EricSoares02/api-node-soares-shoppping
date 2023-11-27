@@ -10,6 +10,7 @@ import { ResponseToCreated } from "../../middleware/Response.express";
 
 // schema de validação de Product
 const ProductSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(3),
   url_img: z.string().array(),
   price_in_cent: z.number().positive(),
@@ -21,6 +22,8 @@ const ProductSchema = z.object({
 });
 
 class ProductController {
+  
+
   public validationProduct(
     req: Request<"", "", Product>,
     res: Response,
@@ -32,6 +35,7 @@ class ProductController {
 
   public async create(req: Request<"", "", Product>, res: Response) {
     const core = new ProductCore();
+    const service = new ProductService(new ProductRepository());
     //verificando as categorias
     core.verifyCategories(req.body);
     //verificando se a loja existe
@@ -48,9 +52,7 @@ class ProductController {
         subCategory,
         url_img,
       } = req.body;
-     const created = await new ProductService(
-        new ProductRepository()
-      ).executeCreateProductRepository(
+      const created = await service.executeCreateProductRepository(
         name,
         url_img,
         price_in_cent,
@@ -61,15 +63,41 @@ class ProductController {
         desc
       );
       //se o id for diferente de vazio, significa que product foi criado e retornamos a resposta da requizição
-      if (created.id !=="") {
-        const response = new ResponseToCreated(created) 
-        response.res(res)
+      if (created.id !== "") {
+        const response = new ResponseToCreated(created);
+        response.res(res);
       }
       // se a loja não existe, retornamos um erro
     } else {
       return new BadRequest("This Store does not exist", res).returnError();
     }
-    
+  }
+
+  public async update(req: Request<"", "", Product>, res: Response) {
+    const core = new ProductCore();
+    const service = new ProductService(new ProductRepository());
+    //verificando se o produto existe
+    const exist = await core.verifyProduct(req.body.id);
+    if (!exist) {
+      return new BadRequest("This Product does not exist", res).returnError();
+    }
+
+    //verificando as categorias
+    core.verifyCategories(req.body);
+    //verificando se a loja existe
+    const storeExist = await core.StoreExist(req.body.storeId);
+    //se a loja exite, chamamos service e criamos o produto
+    if (storeExist) {
+      const update = await service.executeUpdateProductRepositoy(req.body);
+      //se o id for diferente de vazio, significa que product foi criado e retornamos a resposta da requizição
+      if (update.id !== "") {
+        const response = new ResponseToCreated(update);
+        response.res(res);
+      }
+      // se a loja não existe, retornamos um erro
+    } else {
+      return new BadRequest("The Store does not exist", res).returnError();
+    }
   }
 }
 
