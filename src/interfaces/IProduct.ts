@@ -11,6 +11,18 @@ export type Product = {
   //comments: Comments[]
 };
 
+export enum ECategoryTypes{
+    esporte = "esporte",
+    informatica = "informatica",
+    celular = "celular",
+    bebida = "bebida",
+    eletrodomestico = "eletrodomestico",
+    ferramenta = "ferramenta",
+    brinquedo = "brinquedo",
+    moda = "moda",
+    automovel = "automovel",
+}
+
 export interface IProductRepositories {
   create(
     name: string,
