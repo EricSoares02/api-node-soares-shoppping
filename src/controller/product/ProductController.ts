@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { BadRequest } from "../../middleware/errors.express";
 import { z } from "zod";
 import { ValidationData } from "../../middleware/validationData.Zod";
-import { ECategoryTypes, Product } from "../../interfaces/IProduct";
+import { ECategoryTypes, IProductParams, Product } from "../../interfaces/IProduct";
 import { ProductCore } from "../../core/product/productCore";
 import { ProductService } from "../../services/product/ProductService";
 import { ProductRepository } from "../../repositories/product/ProductRepository";
-import { ResponseToCreated } from "../../middleware/Response.express";
+import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 
 // schema de validação de Product
 const ProductSchema = z.object({
@@ -21,10 +21,13 @@ const ProductSchema = z.object({
   storeId: z.string().min(24),
 });
 
+const IdSchema =  z.string().min(24)
+
+
 class ProductController {
   
 
-  public validationProduct(
+  public validationProductPost(
     req: Request<"", "", Product>,
     res: Response,
     next: NextFunction
@@ -33,6 +36,14 @@ class ProductController {
     ValidationData(ProductSchema, data, next);
   }
 
+  public validationProductGet(
+    req: Request<IProductParams>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const data = { data: req.params.id };
+    ValidationData(IdSchema, data, next);
+  }
   public async create(req: Request<"", "", Product>, res: Response) {
     const core = new ProductCore();
     const service = new ProductService(new ProductRepository());
@@ -62,7 +73,7 @@ class ProductController {
         storeId,
         desc
       );
-      //se o id for diferente de vazio, significa que product foi criado e retornamos a resposta da requizição
+      //se o id for diferente de vazio, significa que product foi criado e retornamos a resposta da requisição
       if (created.id !== "") {
         const response = new ResponseToCreated(created);
         response.res(res);
@@ -98,6 +109,19 @@ class ProductController {
     } else {
       return new BadRequest("The Store does not exist", res).returnError();
     }
+  }
+
+  public async getById(req: Request<IProductParams>, res: Response){
+    //buscando o produto com o metodo executeGetByIdProductRepository no ProductService e passando o ProductRepository como parametro.
+    const product = await new ProductService(new ProductRepository()).executeGetByIdProductRepository(req.params.id)
+    //se o produto existe, o enviamos como resposta da requisição
+    if (product.id !== "") {
+      const response = new ResponseGet(product);
+      response.res(res);
+    } else {
+      return new BadRequest("The Product does not exist", res).returnError();
+    }
+
   }
 }
 
