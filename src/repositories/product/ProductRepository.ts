@@ -28,8 +28,7 @@ class ProductRepository implements IProductRepositories {
         },
       })
       .finally(diconnect);
-
-    return createProduct;
+  return createProduct;
   }
 
   public async getById(id: string): Promise<Product> {
