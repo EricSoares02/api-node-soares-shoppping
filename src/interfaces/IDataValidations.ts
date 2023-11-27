@@ -4,5 +4,5 @@ import { User } from "./IUser";
 
 export interface IDataValidations{
 
-data: Store | User | Product
+data: Store | User | Product | string
 }
