@@ -6,6 +6,7 @@ import { StoreRepository } from "../../repositories/store/CreateStoreRepository"
 import { BadRequest, InternalError } from "../../middleware/errors.express";
 import { z } from "zod";
 import { ValidationData } from "../../middleware/validationData.Zod";
+import { ResponseToCreated } from "../../middleware/Response.express";
 
 // schema de validação de Store
 const StoreSchema = z.object({
@@ -39,7 +40,7 @@ class StoreController {
       console.log("criando");
       const service = new StoreService(new StoreRepository());
       const { cnpj, desc, email, name, password, url_img } = req.body;
-      await service.executeCreateStoreRepository(
+      const created = await service.executeCreateStoreRepository(
         "",
         name,
         email,
@@ -48,6 +49,12 @@ class StoreController {
         cnpj,
         desc
       );
+
+      //se o id for diferente de vazio, significa que product foi criado e retornamos a resposta da requizição
+      if (created.id !=="") {
+        const response = new ResponseToCreated(created) 
+        response.res(res)
+      }
     } else {
       return new BadRequest("This Store exist", res).returnError();
     }
