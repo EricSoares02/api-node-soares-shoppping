@@ -8,11 +8,11 @@ export const router = Router();
 // ROTAS PARA PRODUTO
 const product = new ProductController()
 // rota para criar um produto
-router.post("/produtos", product.validationProduct, product.create);
+router.post("/produtos", product.validationProductPost, product.create);
 // rota para criar mais de um produto
 router.post("/produtos/createmany/:storeId")
 // rota para atualizar um produto
-router.patch("/produtos", product.validationProduct, product.update);
+router.patch("/produtos", product.validationProductPost, product.update);
 // rota para deletar um produto
 router.delete("/produtos/:id");
 // rota para pegar produtos por especificos -- rota de search
@@ -20,7 +20,7 @@ router.get("/search/value?");
 // rota para pegar todos os produtos 
 router.get("/produtos");
 // rota para pegar produto por id 
-router.get("/produtos/:id");
+router.get("/produto/:id", product.validationProductGet, product.getById);
 
 
 // ROTAS PARA USER
