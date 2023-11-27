@@ -1,30 +1,37 @@
-import { Product } from "../../interfaces/IProduct"
-import { StoreRepository } from "../../repositories/store/CreateStoreRepository"
-import { StoreService } from "../../services/store/createStoreService"
-import { VerifyCategory } from "./verifyCategory"
+import { Product } from "../../interfaces/IProduct";
+import { ProductRepository } from "../../repositories/product/ProductRepository";
+import { StoreRepository } from "../../repositories/store/CreateStoreRepository";
+import { ProductService } from "../../services/product/ProductService";
+import { StoreService } from "../../services/store/createStoreService";
+import { VerifyCategory } from "./verifyCategory";
 
-class ProductCore{
+class ProductCore {
+  public async StoreExist(storeId: string) {
+    const storeService = new StoreService(new StoreRepository());
 
-public async StoreExist(storeId:string){
+    if ((await storeService.executeGetStoreById(storeId)).id !== "") {
+      return true;
+    }
+    return false;
+  }
 
-const storeService = new StoreService(new StoreRepository)
+  public async verifyCategories(Product: Product) {
+    const verify = new VerifyCategory(Product);
 
-if ((await storeService.executeGetStoreById(storeId)).id !== "") {
-    return true
+    verify.validationCategoryAndSubCategory;
+  }
+
+  public async verifyProduct(id: string) {
+    const verify = await new ProductService(
+      new ProductRepository()
+    ).executeGetByIdProductRepository(id);
+
+    if (verify.id != "") {
+      return true;
+    }
+
+    return false;
+  }
 }
-return false
-}
 
-
-public async verifyCategories(Product: Product){
-
-   const verify = new VerifyCategory(Product)
-
-    verify.validationCategoryAndSubCategory
-
-
-}
-
-}
-
-export {ProductCore}
+export { ProductCore };
