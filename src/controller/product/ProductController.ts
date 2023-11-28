@@ -44,6 +44,7 @@ class ProductController {
     const data = { data: req.params.id };
     ValidationData(IdSchema, data, next);
   }
+
   public async create(req: Request<"", "", Product>, res: Response) {
     const core = new ProductCore();
     const service = new ProductService(new ProductRepository());
@@ -108,6 +109,17 @@ class ProductController {
       // se a loja não existe, retornamos um erro
     } else {
       return new BadRequest("The Store does not exist", res).returnError();
+    }
+  }
+
+  public async getAll(req: Request<"", Product[]>, res: Response){
+    const products = await new ProductService(new ProductRepository()).executeGetAllProductRepository();
+    //se o array de produtos não vier vazio, o enviamos como resposta da requisição
+    if (products.length !== 0) {
+      const response = new ResponseGet(products);
+      response.res(res);
+    } else {
+      return new BadRequest("Not found Products", res).returnError();
     }
   }
 
