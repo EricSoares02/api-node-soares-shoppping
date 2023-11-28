@@ -28,7 +28,7 @@ class ProductRepository implements IProductRepositories {
         },
       })
       .finally(diconnect);
-  return createProduct;
+    return createProduct;
   }
 
   public async getById(id: string): Promise<Product> {
@@ -56,20 +56,16 @@ class ProductRepository implements IProductRepositories {
     };
   }
 
-
   public async getAll(): Promise<Product[]> {
     connect();
-    const getAllProduct = await prisma.product
-      .findMany()
-      .finally(diconnect);
+    const getAllProduct = await prisma.product.findMany().finally(diconnect);
 
-
-    return getAllProduct
+    return getAllProduct;
   }
 
   public async update(newProduct: Product): Promise<Product> {
     connect();
-    const { id: __id, ...product } = newProduct
+    const { id: __id, ...product } = newProduct;
     const updateProduct = await prisma.product
       .update({
         where: { id: __id },
@@ -80,7 +76,30 @@ class ProductRepository implements IProductRepositories {
     return updateProduct;
   }
 
- 
+  public async search(value: string): Promise<Product[]> {
+    const searchResult = await prisma.product
+      .findMany({
+        where: {
+          OR: [
+            {
+              name: { contains: value },
+            },
+            {
+              category: { contains: value },
+            },
+            { subCategory: { contains: value } },
+          ],
+        },
+      })
+      .finally(diconnect);
+
+
+      if(searchResult.length > 0){
+        return searchResult;
+      }
+
+      return []
+  }
 }
 
 export { ProductRepository };
