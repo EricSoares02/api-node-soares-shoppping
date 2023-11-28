@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { BadRequest } from "../../middleware/errors.express";
 import { z } from "zod";
 import { ValidationData } from "../../middleware/validationData.Zod";
-import { ECategoryTypes, IProductParams, Product } from "../../interfaces/IProduct";
+import { ECategoryTypes, IProductParams, IProductQuery, Product } from "../../interfaces/IProduct";
 import { ProductCore } from "../../core/product/productCore";
 import { ProductService } from "../../services/product/ProductService";
 import { ProductRepository } from "../../repositories/product/ProductRepository";
@@ -123,6 +123,20 @@ class ProductController {
     }
 
   }
+
+  public async search(req: Request<IProductParams, '','',IProductQuery>, res: Response){
+
+    const searchResult = await new ProductService(new ProductRepository()).executeSearchProductRepository(req.query.name);
+    //se o array de produtos não vier vazio, o enviamos como resposta da requisição
+    if (searchResult.length !== 0) {
+      const response = new ResponseGet(searchResult);
+      response.res(res);
+    } else {
+      return new BadRequest("Not found Products", res).returnError();
+    }
+
+  }
+
 }
 
 export { ProductController };
