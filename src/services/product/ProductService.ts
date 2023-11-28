@@ -26,6 +26,13 @@ class ProductService {
     return create
   }
 
+  public async executeGetAllProductRepository(){
+
+    const products = await this.ProductRepository.getAll();
+    return products
+
+  }
+
   public async executeUpdateProductRepositoy(newProduct: Product){
 
     const update = await this.ProductRepository.update(newProduct);
