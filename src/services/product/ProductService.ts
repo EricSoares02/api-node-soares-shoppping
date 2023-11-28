@@ -39,6 +39,14 @@ class ProductService {
     return product
 
   }
+
+  public async executeSearchProductRepository(value: string){
+
+    const searchResult = this.ProductRepository.search(value);
+    return searchResult
+
+  }
+
 }
 
 
