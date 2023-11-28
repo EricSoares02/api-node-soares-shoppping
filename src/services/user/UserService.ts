@@ -25,7 +25,16 @@ class UserService {
     return created;
   }
 
-  
+  public async getById(id: string){
+
+    
+
+  }
+  public async login(email: string){
+
+    const Login = this.UserRepository.login(email)
+    return Login
+  }
 }
 
 export { UserService };
