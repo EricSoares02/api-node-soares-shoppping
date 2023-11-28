@@ -60,7 +60,12 @@ class ProductRepository implements IProductRepositories {
     connect();
     const getAllProduct = await prisma.product.findMany().finally(diconnect);
 
-    return getAllProduct;
+    if(getAllProduct.length > 0){
+      return getAllProduct;
+    }
+
+    return []
+   
   }
 
   public async update(newProduct: Product): Promise<Product> {
