@@ -36,6 +36,9 @@ last_name String
 url_img String?
 email String @unique
 password String 
+role String @default("user")
+store Store? @relation(fields: [storeId], references: [id])
+storeId String @db.ObjectId
 requests Request[]
 comments Comments[]
 
@@ -63,6 +66,8 @@ url_img String
 cnpj Int @unique
 desc String?
 products Product[]
+admins User[]
+
 }
 
 model Request{
