@@ -16,7 +16,7 @@ router.patch("/produtos", product.validationProductPost, product.update);
 // rota para deletar um produto
 router.delete("/produtos/:id");
 // rota para pegar produtos por especificos -- rota de search
-router.get("/search/value?");
+router.get("/produtos/", product.search);
 // rota para pegar todos os produtos 
 router.get("/produtos");
 // rota para pegar produto por id 
