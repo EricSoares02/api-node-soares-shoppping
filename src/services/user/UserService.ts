@@ -27,7 +27,8 @@ class UserService {
 
   public async getById(id: string){
 
-    
+    const product = this.UserRepository.getById(id);
+    return product;
 
   }
   public async login(email: string){
