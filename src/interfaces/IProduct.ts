@@ -28,6 +28,12 @@ export interface IProductParams{
   id: string
 }
 
+export interface IProductQuery extends IProductParams{
+  name: string
+  category: string
+  subCategory: string
+}
+
 export interface IProductRepositories {
   create(
     name: string,
