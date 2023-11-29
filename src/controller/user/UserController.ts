@@ -64,17 +64,6 @@ class UserController {
     }
   }
 
-
-  
-  public validationUserGet(
-    req: Request<IUserParams>,
-    res: Response,
-    next: NextFunction
-  ) {
-    const data = { data: req.params.id };
-    ValidationData(IdSchema, data, next);
-  }
-
   public async create(req: Request<"", "", IRequestCreateUser>, res: Response) {
     const core = new UserCore();
     const { email, first_name, last_name, password, role, url_img, storeId } =
@@ -100,7 +89,7 @@ class UserController {
       const hashPassword = await core.encryptPassword(password);
     // chamamos o service e criamos o user
     const service = new UserService(new UserRepository());
-    const created = await service.create(first_name, last_name, email, hashPassword, role, url_img, storeId);
+    const created = await service.executeCreateUserRepository(first_name, last_name, email, hashPassword, role, url_img, storeId);
     
     //se o id for diferente de vazio, significa que user foi criado e retornamos a resposta da requisição
     if (created.id !== "") {
@@ -111,6 +100,18 @@ class UserController {
       return new BadRequest("This User does not created", res).returnError();
     } 
   }
+
+  public validationUserGet(
+    req: Request<IUserParams>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const data = { data: req.params.id };
+    ValidationData(IdSchema, data, next);
+  }
+
+  
+  
 }
 
 export { UserController };
