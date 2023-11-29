@@ -9,7 +9,7 @@ import { NextFunction } from "express";
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.log("Some property is wrong or missing: " + error.issues);
-      
+    
     }
     next(error)
     // if (error instanceof z.ZodError) {
