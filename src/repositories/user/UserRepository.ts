@@ -11,7 +11,7 @@ class UserRepository implements IUserRepositories {
     password: string,
     role: string,
     url_img?: string | null,
-    storeId?: string
+    storeId?: string | null
   ): Promise<User> {
     connect();
 
