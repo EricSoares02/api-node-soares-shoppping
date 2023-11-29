@@ -31,7 +31,7 @@ router.post("/user", user.validationRolePost, user.validationUserPost, user.crea
 // rota para pegar user por id
 router.get("/user/:id", user.validationUserGet, user.getById);
 // rota para logar usuario
-router.post("/login")
+router.post("/login", user.validationUserLogin, user.login)
 
 
 // ROTAS PARA STORE
