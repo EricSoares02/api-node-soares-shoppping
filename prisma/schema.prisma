@@ -38,7 +38,7 @@ email String @unique
 password String 
 role String @default("user")
 store Store? @relation(fields: [storeId], references: [id])
-storeId String @db.ObjectId
+storeId String? @db.ObjectId
 requests Request[]
 comments Comments[]
 
