@@ -10,7 +10,7 @@ class UserService {
     password: string,
     role: string,
     url_img?: string | null,
-    storeId?: string
+    storeId?: string | null
   ) {
     const created = this.UserRepository.create(
       first_name,
