@@ -3,7 +3,7 @@ import { UserRepository } from "../../repositories/user/UserRepository";
 class UserService {
   constructor(private UserRepository: UserRepository) {}
 
-  public async create(
+  public async executeCreateUserRepository(
     first_name: string,
     last_name: string,
     email: string,
@@ -25,13 +25,13 @@ class UserService {
     return created;
   }
 
-  public async getById(id: string){
+  public async executeGetByIdUserRepository(id: string){
 
     const product = this.UserRepository.getById(id);
     return product;
 
   }
-  public async login(email: string){
+  public async executeLoginUserRepository(email: string){
 
     const Login = this.UserRepository.login(email)
     return Login

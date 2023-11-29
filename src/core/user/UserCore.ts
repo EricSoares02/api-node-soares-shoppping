@@ -7,7 +7,7 @@ class UserCore {
 
 public async verifyUser(email: string){
 
-    const userExist = await new UserService(new UserRepository()).login(email);
+    const userExist = await new UserService(new UserRepository()).executeLoginUserRepository(email);
     //se o id do user for diferente de uma string vazia, ele existe, então retormamos true, dizendo que o msm existe, logo não pode ser cadastrado.
     if (userExist.id !== '') {
         return true
@@ -36,7 +36,7 @@ public async verifyRoleToCreateUser(data:IRequestCreateUser){
             //PARA CRIAR UM ADMIN
             case "admin":
              //buscamos a role do criador
-             creator = await service.getById(data.creator.id);
+             creator = await service.executeGetByIdUserRepository(data.creator.id);
              /*
              o creator precisa ser um admin da msm loja || um master da msm loja || um elder
              para criar um admin ((o creator precisa ser um admin && ser da msm loja) || (o creator precisa ser um master && ser da msm loja) || creator pode ser um elder) && (também precisamos verificar se a role do creator que recebemos é igual a que está no banco)
@@ -52,7 +52,7 @@ public async verifyRoleToCreateUser(data:IRequestCreateUser){
             //PARA CRIAR UM MASTER
             case "master":    
             //buscamos a role do criador
-            creator = await service.getById(data.creator.id);
+            creator = await service.executeGetByIdUserRepository(data.creator.id);
             /*
             para criar um master ((o creator precisa ser um master && ser da msm loja) || (o creator precisa ser um elder)) && (também precisamos verificar se a role do creator que recebemos é igual a que está no banco)
             */
@@ -67,7 +67,7 @@ public async verifyRoleToCreateUser(data:IRequestCreateUser){
             //PARA CRIAR UM ELDER 
             case "elder":
             //buscamos a role do criador
-            creator = await service.getById(data.creator.id);
+            creator = await service.executeGetByIdUserRepository(data.creator.id);
             //para criar um elder, o creator precisa ser um elder && precisamos verificar se a role do creator que recebemos é igual a que está no banco
             if (creator.role === 'elder' && data.creator.role === creator.role) {
                 //se as condições forem aceitas, retornamos verdadeiro
