@@ -95,6 +95,23 @@ public async verifyRoleToCreateUser(data:IRequestCreateUser){
 
 }
 
+public async comparePassword(email: string, password: string){
+
+    //buscamos o user no banco de dados
+    const userExist = await new UserService(new UserRepository()).executeLoginUserRepository(email);
+    // verificamos se ele existe
+    //se não existe, retornamos false
+    if (userExist.id === '') {
+        return false
+    }
+    // se existe, comparamos o senha infarmada com a senha do banco e retornamos se é true ou false
+    const compare = await bcrypt.compare(password, userExist.password);
+    return compare
+
+}
+
+
+
 }
 
 export {UserCore}
