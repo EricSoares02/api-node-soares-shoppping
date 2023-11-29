@@ -28,7 +28,8 @@ router.get("/produto/:id", product.validationProductGet, product.getById);
 const user = new UserController()
 // rota para criar usuario
 router.post("/user", user.validationRolePost, user.validationUserPost, user.create);
-router.post("/getuser");
+// rota para pegar user por id
+router.get("/user/:id", user.validationUserGet, user.getById);
 // rota para logar usuario
 router.post("/login")
 
