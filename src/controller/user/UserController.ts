@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { EEspecialRole, ENormalRole, ERole, IRequestCreateUser, IUserParams } from "../../interfaces/IUser";
+import { EEspecialRole, ENormalRole, ERole, ILogin, IRequestCreateUser, IUserParams } from "../../interfaces/IUser";
 import { ValidationData } from "../../middleware/validationData.Zod";
 import { z } from "zod";
 import { UserCore } from "../../core/user/UserCore";
@@ -34,6 +34,10 @@ const MasterOrAdminSchema = z.object({
 
 const IdSchema = z.string().min(24);
 
+const Login = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+})
 
 class UserController {
   public async validationRolePost(
@@ -124,6 +128,49 @@ class UserController {
 
   }
   
+
+  public async validationUserLogin(
+    req: Request<"", "", ILogin>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const user = { data: req.body };
+
+    ValidationData(Login , user, next);
+    
+  }
+
+  public async login(req: Request<"", "", ILogin>, res: Response){
+    const core = new UserCore();
+    const {email, password} = req.body;
+
+    //verificando se o user existe
+    const userExit = await core.verifyUser(email);
+    // se user não existe, disparamos um erro
+    if (!userExit) {
+      return new BadRequest("This User dont exist", res).returnError();
+    }
+
+    //verificando se a password está correta com a do banco
+    const verifyPass = await core.comparePassword(email, password);
+    //se o resultado do metodo for false, a senha está errada então disparamos um erro
+    if (!verifyPass) {
+      return new BadRequest("Wrong password", res).returnError();
+     }
+    
+     //criando token de autenticação
+     const login = await core.login(email)
+     //se o produto existe, o enviamos junto ao token como resposta da requisição
+    if (login.user.id !== "") {
+      const response = new ResponseGet(login);
+      response.res(res);
+    } else {
+      return new BadRequest("The User does not exist", res).returnError();
+    }
+
+
+  }
+
   
 }
 
