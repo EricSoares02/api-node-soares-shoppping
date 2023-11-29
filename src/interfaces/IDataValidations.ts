@@ -1,8 +1,8 @@
 import { Product } from "./IProduct";
 import { Store } from "./IStore";
-import { User } from "./IUser";
+import { ILogin, User } from "./IUser";
 
 export interface IDataValidations{
 
-data: Store | User | Product | string
+data: Store | User | ILogin | Product | string
 }
