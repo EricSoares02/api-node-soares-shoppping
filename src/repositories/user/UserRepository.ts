@@ -45,7 +45,7 @@ class UserRepository implements IUserRepositories {
     };
   }
 
-  public async getById(id: string): Promise<User> {
+  public async getById(id: string): Promise<Partial<User>> {
     connect();
 
     const getByID = await prisma.user
@@ -57,7 +57,8 @@ class UserRepository implements IUserRepositories {
       .finally(diconnect);
 
     if (getByID !== null) {
-      return getByID;
+      const {password: _pass, ...User} = getByID;
+      return User;
     }
 
     return {

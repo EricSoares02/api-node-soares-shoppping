@@ -43,7 +43,7 @@ export interface IUserRepositories {
   
       create(first_name: string, last_name: string, url_img: string, email: string, password: string, role:string, storeId?: string ): Promise<User>
   
-      getById(id:string): Promise<User>
+      getById(id:string): Promise<Partial<User>>
   
       update(newUser: User): Promise<User>
 
