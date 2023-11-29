@@ -58,6 +58,7 @@ class UserRepository implements IUserRepositories {
 
     if (getByID !== null) {
       const {password: _pass, ...User} = getByID;
+      _pass
       return User;
     }
 

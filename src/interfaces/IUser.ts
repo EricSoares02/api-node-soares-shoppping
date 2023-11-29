@@ -21,7 +21,6 @@ export enum EEspecialRole {
   admin = "admin" ,
   master = "master",
 }
-
 export enum ENormalRole {
     user = "user",
     elder = "elder"
@@ -38,7 +37,12 @@ export interface IRequestCreateUser{
   }
   data: User
 }
-  
+export interface ILogin{
+  email: string
+  password: string
+}
+
+
 export interface IUserRepositories {
   
       create(first_name: string, last_name: string, url_img: string, email: string, password: string, role:string, storeId?: string ): Promise<User>
