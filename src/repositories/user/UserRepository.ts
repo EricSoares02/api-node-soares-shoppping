@@ -3,14 +3,14 @@ import { IUserRepositories, User } from "../../interfaces/IUser";
 import { prisma } from "../../services/prisma/prisma";
 
 class UserRepository implements IUserRepositories {
-    
+
   public async create(
     first_name: string,
     last_name: string,
-    url_img: string,
     email: string,
     password: string,
     role: string,
+    url_img?: string | null,
     storeId?: string
   ): Promise<User> {
     connect();
