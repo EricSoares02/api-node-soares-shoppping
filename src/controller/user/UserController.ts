@@ -6,7 +6,7 @@ import { UserCore } from "../../core/user/UserCore";
 import { UserService } from "../../services/user/UserService";
 import { UserRepository } from "../../repositories/user/UserRepository";
 import { BadRequest } from "../../middleware/errors.express";
-import { ResponseToCreated } from "../../middleware/Response.express";
+import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 
 const RoleSchema = z.nativeEnum(ERole)
 
@@ -101,7 +101,7 @@ class UserController {
     } 
   }
 
-  public validationUserGet(
+  public async validationUserGet(
     req: Request<IUserParams>,
     res: Response,
     next: NextFunction
@@ -110,6 +110,19 @@ class UserController {
     ValidationData(IdSchema, data, next);
   }
 
+  public async getById(req: Request<IUserParams>, res: Response) {
+
+    //buscando o user com o metodo executeGetByIdUserRepository no UserService e passando o UserRepository como parametro.
+    const user = await new UserService(new UserRepository()).executeGetByIdUserRepository(req.params.id)
+    //se o produto existe, o enviamos como resposta da requisição
+    if (user.id !== "") {
+      const response = new ResponseGet(user);
+      response.res(res);
+    } else {
+      return new BadRequest("The User does not exist", res).returnError();
+    }
+
+  }
   
   
 }
