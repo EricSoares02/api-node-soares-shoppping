@@ -2,6 +2,7 @@ import { Router } from "express";
 import { StoreController } from "../controller/store/createStore";
 import { ProductController } from "../controller/product/ProductController";
 import { UserController } from "../controller/user/UserController";
+import { CommentController } from "../controller/comment/CommentController";
 
 
 export const router = Router();
@@ -41,5 +42,10 @@ router.post("/store", store.validationStore, store.create)
 
 
 // ROTAS PARA COMMENT
+const comment = new CommentController();
 // rota para criar store
-router.post("/comment")
+router.post("/comment", comment.validationCommentPost, comment.create);
+//rota para pegar comments de um product
+router.get("/comment/produto/:id", comment.validationCommentGet, comment.getByProduct);
+//rota para pegar comments de um user
+router.get("/comment/user/:id", comment.validationCommentGet, comment.getByUser);
