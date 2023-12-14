@@ -7,6 +7,7 @@ import { ProductCore } from "../../core/product/productCore";
 import { ProductService } from "../../services/product/ProductService";
 import { ProductRepository } from "../../repositories/product/ProductRepository";
 import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { IParamsDictionary } from "../../interfaces/IParamsDictionary";
 
 // schema de validação de Product
 const ProductSchema = z.object({
@@ -28,7 +29,7 @@ class ProductController {
   
 
   public validationProductPost(
-    req: Request<"", "", Product>,
+    req: Request<IParamsDictionary, "", Product>,
     res: Response,
     next: NextFunction
   ) {
@@ -45,7 +46,7 @@ class ProductController {
     ValidationData(IdSchema, data, next);
   }
 
-  public async create(req: Request<"", "", Product>, res: Response) {
+  public async create(req: Request<IParamsDictionary, "", Product>, res: Response) {
     const core = new ProductCore();
     const service = new ProductService(new ProductRepository());
     //verificando as categorias
@@ -85,7 +86,7 @@ class ProductController {
     }
   }
 
-  public async update(req: Request<"", "", Product>, res: Response) {
+  public async update(req: Request<IParamsDictionary, "", Product>, res: Response) {
     const core = new ProductCore();
     const service = new ProductService(new ProductRepository());
     //verificando se o produto existe

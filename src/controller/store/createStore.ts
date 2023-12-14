@@ -7,6 +7,7 @@ import { BadRequest, InternalError } from "../../middleware/errors.express";
 import { z } from "zod";
 import { ValidationData } from "../../middleware/validationData.Zod";
 import { ResponseToCreated } from "../../middleware/Response.express";
+import { IParamsDictionary } from "../../interfaces/IParamsDictionary";
 
 // schema de validação de Store
 const StoreSchema = z.object({
@@ -20,7 +21,7 @@ const StoreSchema = z.object({
 
 class StoreController {
   public validationStore(
-    req: Request<"", "", Store>,
+    req: Request<IParamsDictionary, "", Store>,
     res: Response,
     next: NextFunction
   ) {
@@ -28,14 +29,11 @@ class StoreController {
     ValidationData(StoreSchema, data, next);
   }
 
-  public async create(req: Request<"", "", Store>, res: Response) {
-    const core = new StoreCore();
+  public async create(req: Request<IParamsDictionary, "", Store>, res: Response) {
+    const core = new StoreCore(); 
     const verify = await core.existStoreVerify(req.body).catch(() => {
-      throw new InternalError("Internal Server Error", res);
+      return new InternalError("Internal Server Error", res).returnError();
     });
-    console.log(`verify: ${verify}`);
-    console.log("chegou em create");
-
     if (!verify) {
       console.log("criando");
       const service = new StoreService(new StoreRepository());
