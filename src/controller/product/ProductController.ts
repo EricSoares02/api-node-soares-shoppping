@@ -51,6 +51,14 @@ class ProductController {
     const service = new ProductService(new ProductRepository());
     //verificando as categorias
     core.verifyCategories(req.body);
+    //pegando o authorization token do headers
+    const {authorization} = req.headers;
+    // verificando se o user que fez a requisição está criando um produto para loja qual ele pertence
+    const verifyUserStore = await core.verifyUserStore(req.body, authorization);
+    if(!verifyUserStore){
+      return new BadRequest("This User cannot create a product in this Store", res).returnError();
+    }
+
     //verificando se a loja existe
     const storeExist = await core.StoreExist(req.body.storeId);
     //se a loja exite, chamamos service e criamos o produto
