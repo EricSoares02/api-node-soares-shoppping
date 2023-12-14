@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { Unauthorized } from "../errors.express";
 import { AuthenticatingUserJwt } from "./AuthenticatingUser";
+import { DecodedTokenJwt } from "../decodedToken.Jwt";
 
 const SecurityLvl = {
   admin: 1,
@@ -15,12 +15,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    if (authorization === undefined) {
-      return new Unauthorized("unauthorized", res).returnError();
-    }
-    const token = authorization.split(" ")[1];
-
-    AuthenticatingUserJwt(token, res, SecurityLvl.admin, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.admin, next);
   }
 
   public async authenticationForMaster(
@@ -29,11 +24,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    if (authorization === undefined) {
-      return new Unauthorized("unauthorized", res).returnError();
-    }
-    const token = authorization.split(" ")[1];
-    AuthenticatingUserJwt(token, res, SecurityLvl.master, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.master, next);
   }
 
   public async authenticationForElder(
@@ -42,11 +33,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    if (authorization === undefined) {
-      return new Unauthorized("unauthorized", res).returnError();
-    }
-    const token = authorization.split(" ")[1];
-    AuthenticatingUserJwt(token, res, SecurityLvl.elder, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.elder, next);
   }
 }
 
