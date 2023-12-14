@@ -126,7 +126,7 @@ class UserCore {
     // verificamos se ele existe
     //se não existe
     const token = jwt.sign({ id: User.id }, process.env.JWT_PASS ?? "", {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     return {
@@ -134,7 +134,7 @@ class UserCore {
         id: User.id,
         url_img: User.url_img,
       },
-      token: token,
+      access_token: token,
     };
   }
 }
