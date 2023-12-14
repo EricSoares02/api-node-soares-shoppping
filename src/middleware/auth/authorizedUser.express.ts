@@ -9,13 +9,13 @@ class verifyAuthorizedUser {
   verify() {
     switch (this.securityLvl) {
       case 1:
-        if (this.user.role === "admin") {
+        if (this.user.role === "admin" || this.user.role === "master" || this.user.role === "elder") {
           return true;
         }
         return false;
 
       case 2:
-        if (this.user.role === "master") {
+        if (this.user.role === "master" || this.user.role === "elder") {
           return true;
         }
         return false;
