@@ -22,7 +22,7 @@ class CommentController {
     req: Request<"", "", Comment>,
     res: Response,
     next: NextFunction
-  ) {
+  ) { 
     const data = { data: req.body };
     ValidationData(CommentSchema, data, next);
   }

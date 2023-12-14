@@ -1,4 +1,4 @@
-import supertest from "supertest";
-import { server } from "../src/server";
+// import supertest from "supertest";
+// import { server } from "../src/server";
 
-export const testServer = supertest(server)
+// export const testServer = supertest(server)
