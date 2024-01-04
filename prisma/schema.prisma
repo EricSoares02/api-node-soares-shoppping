@@ -41,6 +41,7 @@ store Store? @relation(fields: [storeId], references: [id])
 storeId String? @db.ObjectId
 requests Request[]
 comments Comments[]
+likes LikesComment[]
 
 }
 
@@ -53,7 +54,16 @@ product_commented  Product @relation(fields: [product_commentedId], references: 
 product_commentedId  String @db.ObjectId
 title String
 stars Int @default(0)
+likes LikesComment[]
+createdAt DateTime @default(now())
+}
 
+model LikesComment {
+id String @id @default(auto()) @map("_id") @db.ObjectId
+author   User   @relation(fields: [authorId], references: [id])
+authorId String @db.ObjectId
+commentLiked Comments? @relation(fields: [commentId], references: [id])
+commentId String? @db.ObjectId
 }
 
 model Store {
