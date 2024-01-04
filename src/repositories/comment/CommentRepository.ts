@@ -1,5 +1,5 @@
 import { connect, diconnect } from "../../database/database";
-import { Comment, ICommentRepositories } from "../../interfaces/IComment";
+import { Comment, CommentTypeToGetByProduct, ICommentRepositories } from "../../interfaces/IComment";
 import { prisma } from "../../services/prisma/prisma";
 
 class CommentRepository implements ICommentRepositories{
@@ -22,15 +22,32 @@ public async create(authorId: string, product_commentedId: string, title: string
 
 }
 
-public async getByProduct(product_commentedId: string): Promise<Comment[]> {
+public async getByProduct(product_commentedId: string): Promise<CommentTypeToGetByProduct[]> {
   
   connect();
   
-  const CommentsByProduct = await prisma.comments.findMany({where:{product_commentedId}}).finally(diconnect)
-
+  const CommentsByProduct = await prisma.comments.findMany(
+    {
+      where:{product_commentedId},
+      include: {
+        _count:{
+          select:{likes:true}}}
+    }
+    ).finally(diconnect);
 
     if(CommentsByProduct.length > 0){
-        return CommentsByProduct
+
+    const T = CommentsByProduct.map((comment)=>{
+      return {
+        id: comment.id,
+        title: comment.title,
+        stars: comment.stars,
+        likes: comment._count.likes,
+        createdAt: comment.createdAt
+      }
+      })
+      
+      return T
     }
 
     return []
