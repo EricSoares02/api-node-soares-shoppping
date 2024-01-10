@@ -130,10 +130,7 @@ class UserCore {
     });
 
     return {
-      user: {
-        id: User.id,
-        url_img: User.url_img,
-      },
+      user: {first_name:User.first_name, last_name: User.last_name} ,
       access_token: token,
     };
   }

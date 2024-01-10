@@ -161,7 +161,7 @@ class UserController {
      //criando token de autenticação
      const login = await core.login(email)
      //se o produto existe, o enviamos junto ao token como resposta da requisição
-    if (login.user.id !== "") {
+    if (login.user.first_name !== "") {
       const response = new ResponseGet(login);
       response.res(res);
     } else {
