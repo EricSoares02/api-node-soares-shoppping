@@ -1,4 +1,5 @@
 import { IRequestCreateUser } from "../../interfaces/IUser";
+import { DecodedTokenJwt } from "../../middleware/decodedToken.Jwt";
 import { UserRepository } from "../../repositories/user/UserRepository";
 import { UserService } from "../../services/user/UserService";
 import bcrypt from "bcrypt";
@@ -133,6 +134,13 @@ class UserCore {
       user: {first_name:User.first_name, last_name: User.last_name} ,
       access_token: token,
     };
+  }
+
+  public async decodedToken(token: string){
+
+    const hashToken = DecodedTokenJwt(token);
+    return hashToken
+
   }
 }
 

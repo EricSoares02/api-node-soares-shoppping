@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { EEspecialRole, ENormalRole, ERole, ILogin, IRequestCreateUser, IUserParams } from "../../interfaces/IUser";
+import { EEspecialRole, ENormalRole, ERole, ILogin, IRequestCreateUser} from "../../interfaces/IUser";
 import { ValidationData } from "../../middleware/validationData.Zod";
-import { z } from "zod";
+import { Schema, z } from "zod";
+import Jwt from "jsonwebtoken";
 import { UserCore } from "../../core/user/UserCore";
 import { UserService } from "../../services/user/UserService";
 import { UserRepository } from "../../repositories/user/UserRepository";
@@ -9,6 +10,11 @@ import { BadRequest } from "../../middleware/errors.express";
 import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 
 const RoleSchema = z.nativeEnum(ERole)
+
+type JwtPayload = {
+  id: string;
+};
+
 
 const UserOrElderSchema = z.object({
   //id: z.string().min(24),
@@ -32,7 +38,7 @@ const MasterOrAdminSchema = z.object({
   storeId: z.string().min(24)
 });
 
-const IdSchema = z.string().min(24);
+const SchemaGetUser = z.string().min(15);
 
 const Login = z.object({
   email: z.string().email(),
@@ -106,18 +112,38 @@ class UserController {
   }
 
   public async validationUserGet(
-    req: Request<IUserParams>,
+    req: Request,
     res: Response,
     next: NextFunction
   ) {
-    const data = { data: req.params.id };
-    ValidationData(IdSchema, data, next);
+
+    const data = req.headers.authorization ?? '';
+
+     function ValidationDataToGetUser(Schema: Schema, next: NextFunction, data?: string) {
+      try {
+        Schema.parse(data)
+       next()
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          console.log("Some property is wrong or missing: " + error.issues);
+        
+        }
+        next(error);
+      }
+    }
+
+    ValidationDataToGetUser(SchemaGetUser, next, data);
   }
 
-  public async getById(req: Request<IUserParams>, res: Response) {
+  public async getById(req: Request, res: Response) {
+
+
+    const token = await new UserCore().decodedToken(req.headers.authorization ?? '')
+    
+    const { id } = Jwt.decode(token) as JwtPayload
 
     //buscando o user com o metodo executeGetByIdUserRepository no UserService e passando o UserRepository como parametro.
-    const user = await new UserService(new UserRepository()).executeGetByIdUserRepository(req.params.id)
+    const user = await new UserService(new UserRepository()).executeGetByIdUserRepository(id)
     //se o produto existe, o enviamos como resposta da requisição
     if (user.id !== "") {
       const response = new ResponseGet(user);

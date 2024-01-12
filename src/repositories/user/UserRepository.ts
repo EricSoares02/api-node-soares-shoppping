@@ -68,7 +68,6 @@ class UserRepository implements IUserRepositories {
       last_name: "",
       url_img: "",
       email: "",
-      password: "",
       role: "",
       storeId: "",
     };
