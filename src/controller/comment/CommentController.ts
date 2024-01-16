@@ -1,12 +1,17 @@
-import { z } from "zod";
+import { Schema, z } from "zod";
 import { NextFunction, Request, Response } from "express";
 import { Comment, ICommentParams } from "../../interfaces/IComment";
 import { ValidationData } from "../../middleware/validationData.Zod";
 import { CommentService } from "../../services/comment/CommentService";
 import { CommentRepository } from "../../repositories/comment/CommentRepository";
 import { BadRequest, InternalError } from "../../middleware/errors.express";
-import { CommnetCore } from "../../core/comment/CommentCore";
+import { CommentCore } from "../../core/comment/CommentCore";
 import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import Jwt from "jsonwebtoken";
+
+type JwtPayload = {
+  id: string;
+};
 
 const CommentSchema = z.object({
   authorId: z.string().min(24),
@@ -16,6 +21,8 @@ const CommentSchema = z.object({
 });
 
 const IdSchema = z.string().min(24);
+const SchemaGetCommentByUser = z.string().min(15);
+
 
 class CommentController {
   public validationCommentPost(
@@ -27,7 +34,7 @@ class CommentController {
     ValidationData(CommentSchema, data, next);
   }
 
-  public validationCommentGet(
+  public async validationCommentGet(
     req: Request<ICommentParams>,
     res: Response,
     next: NextFunction
@@ -36,9 +43,33 @@ class CommentController {
     ValidationData(IdSchema, data, next);
   }
 
+  public async validationCommentGetByUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    
+    const data = req.headers.authorization ?? '';
+
+    function ValidationDataToGetUser(Schema: Schema, next: NextFunction, data?: string) {
+     try {
+       Schema.parse(data)
+      next()
+     } catch (error) {
+       if (error instanceof z.ZodError) {
+         console.log("Some property is wrong or missing: " + error.issues);
+       
+       }
+       next(error);
+     }
+   }
+
+   ValidationDataToGetUser(SchemaGetCommentByUser, next, data);
+  }
+
   public async create(req: Request<"", "", Comment>, res: Response) {
     const { authorId, product_commentedId, stars, title } = req.body;
-    const core = new CommnetCore();
+    const core = new CommentCore();
 
     const productExist = await core.verifyProductExist(product_commentedId);
     const userExist = await core.verifyUserExist(authorId);
@@ -76,8 +107,12 @@ class CommentController {
     return new ResponseGet(comments).res(res);
   }
 
-  public async getByUser(req: Request<ICommentParams>, res: Response) {
-    const id = req.params.id;
+  public async getByUser(req: Request, res: Response) {
+    
+    
+    const token = await new CommentCore().decodedToken(req.headers.authorization ?? '')
+    
+    const { id } = Jwt.decode(token) as JwtPayload
 
     const comments = await new CommentService(
       new CommentRepository()

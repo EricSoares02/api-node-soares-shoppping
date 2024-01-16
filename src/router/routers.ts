@@ -50,8 +50,4 @@ router.get(
   comment.getByProduct
 );
 //rota para pegar comments de um user
-router.get(
-  "/comment/user/:id",
-  comment.validationCommentGet,
-  comment.getByUser
-);
+router.get("/comment/user", comment.validationCommentGetByUser, comment.getByUser);
