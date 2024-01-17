@@ -15,7 +15,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.admin, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization ?? ''), res, SecurityLvl.admin, next);
   }
 
   public async authenticationForMaster(
@@ -24,7 +24,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.master, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization ?? ''), res, SecurityLvl.master, next);
   }
 
   public async authenticationForElder(
@@ -33,7 +33,7 @@ class Authorization {
     next: NextFunction
   ): Promise<Response | void> {
     const { authorization } = await req.headers;
-    AuthenticatingUserJwt(DecodedTokenJwt(authorization), res, SecurityLvl.elder, next);
+    AuthenticatingUserJwt(DecodedTokenJwt(authorization ?? ''), res, SecurityLvl.elder, next);
   }
 }
 

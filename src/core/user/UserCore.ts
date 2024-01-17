@@ -1,9 +1,10 @@
-import { IRequestCreateUser } from "../../interfaces/IUser";
 import { DecodedTokenJwt } from "../../middleware/decodedToken.Jwt";
 import { UserRepository } from "../../repositories/user/UserRepository";
 import { UserService } from "../../services/user/UserService";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { StoreService } from "../../services/store/createStoreService";
+import { StoreRepository } from "../../repositories/store/CreateStoreRepository";
 
 class UserCore {
   public async verifyUser(email: string) {
@@ -18,90 +19,53 @@ class UserCore {
     return false;
   }
 
+  public async verifyStore(storeId: string){
+    const storeExist = await new StoreService(
+      new StoreRepository()
+    ).executeGetStoreById(storeId);
+    //se o id da store for diferente de uma string vazia, ele existe, então retormamos true
+    if (storeExist.id !== "") {
+      return true;
+    }
+    //se não, retornamos false
+    return false;
+  }
+
   public async encryptPassword(password: string) {
     const hashPassword = await bcrypt.hash(password, 10);
     return hashPassword;
   }
 
-  public async verifyRoleToCreateUser(data: IRequestCreateUser) {
-    const service = new UserService(new UserRepository());
-    let creator = null;
+  public async verifyRoleToCreateUser(userRole: string, creatorId: string) {
 
-    //se o criador for diferente de undefined, seguimos as seguintes regras
-    if (data.creator !== undefined) {
-      //switch para verificar qual o tipo de role do user que pretendemos criar
-      switch (data.data.role) {
-        //PARA CRIAR UM ADMIN
-        case "admin":
-          //buscamos a role do criador
-          creator = await service.executeGetByIdUserRepository(data.creator.id);
-          /*
-             o creator precisa ser um admin da msm loja || um master da msm loja || um elder
-             para criar um admin ((o creator precisa ser um admin && ser da msm loja) || (o creator precisa ser um master && ser da msm loja) || creator pode ser um elder) && (também precisamos verificar se a role do creator que recebemos é igual a que está no banco)
-             */
-          if (
-            ((creator.role === "admin" &&
-              creator.storeId === data.data.storeId) ||
-              (creator.role === "master" &&
-                creator.storeId === data.data.storeId) ||
-              creator.role === "elder") &&
-            data.creator.role === creator.role
-          ) {
-            //se as condições forem aceitas, retornamos verdadeiro
-            return true;
+   
+    //se o creatorId e user Role for diferente uma string vazia, seguimos as seguintes regras
+      if (creatorId !== '' && userRole !== '') {
+
+        const creator = await new UserService(new UserRepository()).executeGetByIdUserRepository(creatorId)
+          switch (userRole) {
+            case 'admin':
+  
+              if (creator.role === 'master' || creator.role === 'elder') {
+                return true
+              } 
+              return false
+
+            case 'master':
+              if (creator.role === 'elder') {
+                return true
+              } 
+              return false
+            default:
+              return false
           }
-          //se as condições não forem aceitas, retornamos falso
-          return false;
-
-          break;
-        //PARA CRIAR UM MASTER
-        case "master":
-          //buscamos a role do criador
-          creator = await service.executeGetByIdUserRepository(data.creator.id);
-          /*
-            para criar um master ((o creator precisa ser um master && ser da msm loja) || (o creator precisa ser um elder)) && (também precisamos verificar se a role do creator que recebemos é igual a que está no banco)
-            */
-          if (
-            ((creator.role === "master" &&
-              creator.storeId === data.data.storeId) ||
-              creator.role === "elder") &&
-            data.creator.role === creator.role
-          ) {
-            //se as condições forem aceitas, retornamos verdadeiro
-            return true;
-          }
-          //se as condições não forem aceitas, retornamos falso
-          return false;
-
-          break;
-        //PARA CRIAR UM ELDER
-        case "elder":
-          //buscamos a role do criador
-          creator = await service.executeGetByIdUserRepository(data.creator.id);
-          //para criar um elder, o creator precisa ser um elder && precisamos verificar se a role do creator que recebemos é igual a que está no banco
-          if (creator.role === "elder" && data.creator.role === creator.role) {
-            //se as condições forem aceitas, retornamos verdadeiro
-            return true;
-          }
-          //se as condições não forem aceitas, retornamos falso
-          return false;
-
-          break;
-        default:
-          //por padrão retornamos verdadeiro pq um usuario comum pode ser criado sem dificuldades. podemos retornar true sem problemas pois a validação dos dados já ocorreu neste momento, então se user não é um user especial, ele é um user padrão e não está fora das regras
-          return true;
-          break;
+    //se o creator for undefined
+      } else if (creatorId === '' || userRole ==='') {
+         return false
       }
+       
+      
 
-      //se o creator for undefined
-    } else if (data.creator === undefined) {
-      // primeiro verificamos se está sendo criado um user padrão, se caso esteja, retornamos true pois o user padrão não precisa de creator
-      if (data.data.role === "user") {
-        return true;
-      }
-      //caso não seja um user padrão, retornamos false, pois user especiais precisam de creator
-      return false;
-    }
   }
 
   public async comparePassword(email: string, password: string) {

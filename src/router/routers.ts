@@ -4,6 +4,7 @@ import { ProductController } from "../controller/product/ProductController";
 import { UserController } from "../controller/user/UserController";
 import { CommentController } from "../controller/comment/CommentController";
 import { Authorization } from "../middleware/auth/authorization.express";
+import { SpecialUserController } from "../controller/user/SpecialUserController";
 
 
 export const router = Router();
@@ -27,8 +28,11 @@ router.get("/produto/:id", product.validationProductGet, product.getById);
 
 // ROTAS PARA USER
 const user = new UserController();
+const specialUser = new SpecialUserController()
 // rota para criar usuario
 router.post("/user",user.validationRolePost,user.validationUserPost,user.create);
+// rota para criar usuarios especiais
+router.post("/user/special",specialUser.validationRolePost,specialUser.verifyPostUser, specialUser.create);
 // rota para pegar user por id
 router.get("/user/", user.validationUserGet, user.getById);
 // rota para logar usuario

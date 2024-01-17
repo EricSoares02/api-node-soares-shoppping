@@ -42,7 +42,7 @@ class ProductCore {
   }
 
   //o user que tenta cadastrar o produto, precisa ser da msm loja que está cadastrando o produto, e tbm precisa ser um adm, ou um master ou elder
-  public async verifyUserStore(product: Product, authorization?: string){
+  public async verifyUserStore(product: Product, authorization: string){
 
    const token = DecodedTokenJwt(authorization);
    if(token===''){

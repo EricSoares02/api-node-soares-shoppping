@@ -30,13 +30,6 @@ export interface IUserParams{
   id: string
 }
 
-export interface IRequestCreateUser{
-  creator?: {
-    id: string,
-    role: string
-  }
-  data: User
-}
 export interface ILogin{
   email: string
   password: string
