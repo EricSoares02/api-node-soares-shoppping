@@ -28,5 +28,11 @@ class CartService {
 
     return created;
   }
+
+  public async executeGetCartByUserRepository(ownerId: string) {
+    const created = await this.CartRepository.getCartByUser(ownerId);
+
+    return created;
+  }
 }
 export { CartService };
