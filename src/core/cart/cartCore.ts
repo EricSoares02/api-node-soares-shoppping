@@ -1,3 +1,4 @@
+import { DecodedTokenJwt } from "../../middleware/decodedToken.Jwt";
 import { CartRepository } from "../../repositories/cart/CartRepository"
 import { CartService } from "../../services/cart/CartService"
 
@@ -15,6 +16,12 @@ class CartCore {
         return false
     }
 
+    public async decodedToken(token: string){
+
+        const hashToken = DecodedTokenJwt(token);
+        return hashToken
+    
+      }
 
 }
 

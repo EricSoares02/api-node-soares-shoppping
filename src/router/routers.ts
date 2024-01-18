@@ -62,4 +62,5 @@ router.get("/comment/user", comment.validationCommentGetByUser, comment.getByUse
 
 const cart = new CartController();
 
-router.post('/cart', cart.validationPostCart, cart.create)
+router.post('/cart', cart.validationPostCart, cart.create);
+router.post('/cart/insertProduct', cart.validationInsertProductCart, cart.insertProductInCart)
