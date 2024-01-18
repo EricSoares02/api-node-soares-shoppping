@@ -83,6 +83,26 @@ class CartRepository implements ICartRepositories {
 
     return [];
   }
+
+  public async getCartByUser(ownerId: string): Promise<DefaultCartType> {
+    const Cart = await prisma.cart
+      .findUnique({
+        where: {
+          ownerId
+        },
+      })
+      .finally(diconnect);
+
+    if (Cart) {
+      return Cart;
+    }
+
+    return {
+        id: "",
+        ownerId: "",
+        product_ids: [],
+      };
+  }
 }
 
 export { CartRepository };
