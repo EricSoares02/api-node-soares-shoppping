@@ -25,7 +25,16 @@ options String[]
 store Store @relation(fields: [storeId], references: [id])
 storeId String @db.ObjectId
 comments Comments[]
+cart_ids String[]   @db.ObjectId
+cart  Cart[] @relation(fields: [cart_ids], references: [id])
+}
 
+model Cart{
+id String @id @default(auto()) @map("_id") @db.ObjectId
+owner   User   @relation(fields: [ownerId], references: [id])
+ownerId String @unique @db.ObjectId
+product_ids String[]   @db.ObjectId
+product  Product[] @relation(fields: [product_ids], references: [id])
 }
 
 model User{
@@ -42,7 +51,7 @@ storeId String? @db.ObjectId
 requests Request[]
 comments Comments[]
 likes LikesComment[]
-
+cart   Cart? 
 }
 
 model Comments {
