@@ -5,6 +5,7 @@ import { UserController } from "../controller/user/UserController";
 import { CommentController } from "../controller/comment/CommentController";
 import { Authorization } from "../middleware/auth/authorization.express";
 import { SpecialUserController } from "../controller/user/SpecialUserController";
+import { CartController } from "../controller/cart/CartController";
 
 
 export const router = Router();
@@ -55,3 +56,10 @@ router.get(
 );
 //rota para pegar comments de um user
 router.get("/comment/user", comment.validationCommentGetByUser, comment.getByUser);
+
+
+// ROTAS PARA CART 
+
+const cart = new CartController();
+
+router.post('/cart', cart.validationPostCart, cart.create)
