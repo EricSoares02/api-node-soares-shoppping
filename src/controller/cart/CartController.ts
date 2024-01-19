@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { DefaultCartType } from "../../interfaces/ICart";
 import { CartCore } from "../../core/cart/cartCore";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
+import {
+  BadRequest,
+  InternalError,
+  Unauthorized,
+} from "../../middleware/errors.express";
 import { CartService } from "../../services/cart/CartService";
 import { CartRepository } from "../../repositories/cart/CartRepository";
 import { ResponseToCreated } from "../../middleware/Response.express";
@@ -11,15 +15,13 @@ import { GetIdByJwtToken } from "../../middleware/getIdByToken.Jwt";
 
 const PostCartSchema = z.object({
   ownerId: z.string().min(24),
-  product_ids: z.array(z.string().min(24)).optional(),
+  product_ids: z.array(z.string().min(24)),
+  quatity_Product: z.array(z.number().nonnegative()),
 });
 
-const PostProductInCartSchema =  z.array(z.string().min(24));
- 
-
+const PostProductInCartSchema = z.array(z.string().min(24));
 
 class CartController {
-
   public async validationPostCart(
     req: Request<"", "", DefaultCartType>,
     res: Response,
@@ -45,7 +47,6 @@ class CartController {
     return new ResponseToCreated(created).res(res);
   }
 
-
   public async validationInsertProductCart(
     req: Request<"", "", DefaultCartType>,
     res: Response,
@@ -55,43 +56,63 @@ class CartController {
     ValidationData(PostProductInCartSchema, data, next);
   }
 
-  public async insertProductInCart(req: Request<"", "", DefaultCartType>, res: Response) {
-    
-
+  public async insertProductInCart(
+    req: Request<"", "", DefaultCartType>,
+    res: Response
+  ) {
     const token = await new CartCore().decodedToken(
-        req.headers.authorization ?? ""
-        );  
+      req.headers.authorization ?? ""
+    );
     const id = await GetIdByJwtToken(token);
     if (id === null) {
-        return new Unauthorized('token is required', res).returnError();
+      return new Unauthorized("token is required", res).returnError();
+    }
+
+    // verificando se o carrinho existe e se é do msm dono
+    const UserCart = await new CartService(
+      new CartRepository()
+    ).executeGetCartByUserRepository(id);
+    if (UserCart.id === "") {
+      return new BadRequest("This cart not exist", res).returnError();
+    } else if (UserCart.product_ids.length === 30) {
+      return new BadRequest("full cart", res).returnError();
     }
 
 
-    // verificando se o carrinho existe e se é do msm dono 
-    const UserCart = await new CartService(new CartRepository()).executeGetCartByUserRepository(id);
-    if (UserCart.id === '') {
-      return new BadRequest("This cart not exist", res).returnError();
-    } else if (UserCart.product_ids.length === 30) {
-        return new BadRequest("full cart", res).returnError();
-      }
+    // primeiro verificamos se o produto já existe no carrinho
+    const productExist = UserCart.product_ids.filter(
+      (product) => product === req.body.product_ids[0]
+    );
 
-
-    // inserindo os novos dados no user cart
-      req.body.product_ids.map((product)=>{
-        return UserCart.product_ids.push(product)
-    });  
-
-
+    // se o produto já existe, só aumentamos a quantidade... os index têm qeu ser iguais
+    if (productExist.length > 0) {
+      UserCart.product_ids.map((product, index) => {
+        if (product === req.body.product_ids[0]) {
+          return (UserCart.quatity_Product[index] =
+            UserCart.quatity_Product[index] + 1);
+        }
+      });
+    } else {
+      // inserindo os novos dados no user cart
+      req.body.product_ids.map((product) => {
+        return (
+          UserCart.product_ids.push(product), UserCart.quatity_Product.push(1)
+        );
+      });
+    }
 
     const created = await new CartService(
-        new CartRepository()
-      ).executeInsertProductInCartRepository(UserCart.id, UserCart.product_ids);
-      if (!created) {
-        return new InternalError("Internal Server Error", res).returnError();
-      }
-      return new ResponseToCreated(created).res(res);
+      new CartRepository()
+    ).executeInsertProductInCartRepository(
+      UserCart.id,
+      UserCart.product_ids,
+      UserCart.quatity_Product
+    );
+    if (!created) {
+      return new InternalError("Internal Server Error", res).returnError();
+    }
+    return new ResponseToCreated(created).res(res);
   }
-
 }
 
 export { CartController };

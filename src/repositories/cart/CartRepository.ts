@@ -36,12 +36,14 @@ class CartRepository implements ICartRepositories {
       id: "",
       ownerId: "",
       product_ids: [],
+      quatity_Product: []
     };
   }
 
   public async insertProduct(
     id: string,
-    product_ids: string[]
+    product_ids: string[],
+    quatity_Product?: number[]
   ): Promise<DefaultCartType> {
     connect();
     const Cart = await prisma.cart
@@ -51,6 +53,7 @@ class CartRepository implements ICartRepositories {
         },
         data: {
           product_ids,
+          quatity_Product
         },
       })
       .finally(diconnect);
@@ -63,6 +66,7 @@ class CartRepository implements ICartRepositories {
       id: "",
       ownerId: "",
       product_ids: [],
+      quatity_Product: []
     };
   }
 
@@ -86,7 +90,7 @@ class CartRepository implements ICartRepositories {
 
   public async getCartByUser(ownerId: string): Promise<DefaultCartType> {
     const Cart = await prisma.cart
-      .findUnique({
+      .findFirst({
         where: {
           ownerId
         },
@@ -101,6 +105,7 @@ class CartRepository implements ICartRepositories {
         id: "",
         ownerId: "",
         product_ids: [],
+        quatity_Product: []
       };
   }
 }

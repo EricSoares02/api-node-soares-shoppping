@@ -34,6 +34,7 @@ id String @id @default(auto()) @map("_id") @db.ObjectId
 owner   User   @relation(fields: [ownerId], references: [id])
 ownerId String @unique @db.ObjectId
 product_ids String[]   @db.ObjectId
+quatity_Product Int[]
 product  Product[] @relation(fields: [product_ids], references: [id])
 }
 

@@ -23,8 +23,8 @@ class CartService {
     return commentsByUser;
   }
 
-  public async executeInsertProductInCartRepository(id: string, product_ids: string[]) {
-    const created = await this.CartRepository.insertProduct(id, product_ids);
+  public async executeInsertProductInCartRepository(id: string, product_ids: string[], quatity_Product?: number[]) {
+    const created = await this.CartRepository.insertProduct(id, product_ids, quatity_Product);
 
     return created;
   }

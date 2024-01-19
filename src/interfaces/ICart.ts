@@ -4,6 +4,7 @@ export type DefaultCartType = {
     id: string;
     ownerId: string;
     product_ids: string[];
+    quatity_Product: number[]
 }
 
 
