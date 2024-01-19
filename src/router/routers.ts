@@ -65,3 +65,4 @@ const cart = new CartController();
 router.post('/cart', cart.validationPostCart, cart.create);
 router.post('/cart/insertProduct', cart.validationInsertProductCart, cart.insertProductInCart);
 router.patch('/cart', cart.validationRemoveProductCart, cart.removeProductToCart);
+router.get('/cart/product', cart.getProductsByCart)

@@ -71,14 +71,8 @@ class CartRepository implements ICartRepositories {
   }
 
   public async getProductsByCart(CartId: string): Promise<Product[]> {
-    const Products = await prisma.product
-      .findMany({
-        where: {
-          cart_ids: {
-            hasSome: [CartId],
-          },
-        },
-      })
+    const Products = await prisma.cart
+      .findFirst({where: {id: CartId}}).product()
       .finally(diconnect);
 
     if (Products) {

@@ -8,7 +8,10 @@ import {
 } from "../../middleware/errors.express";
 import { CartService } from "../../services/cart/CartService";
 import { CartRepository } from "../../repositories/cart/CartRepository";
-import { ResponseToCreated } from "../../middleware/Response.express";
+import {
+  ResponseGet,
+  ResponseToCreated,
+} from "../../middleware/Response.express";
 import { z } from "zod";
 import { ValidationData } from "../../middleware/validationData.Zod";
 import { GetIdByJwtToken } from "../../middleware/getIdByToken.Jwt";
@@ -154,8 +157,10 @@ class CartController {
       UserCart.product_ids.map((product, index) => {
         if (product === req.body.product_ids[0]) {
           if (UserCart.quatity_Product[index] === 1) {
-            
-            return (UserCart.quatity_Product.splice(index, 1), UserCart.product_ids.splice(index, 1));
+            return (
+              UserCart.quatity_Product.splice(index, 1),
+              UserCart.product_ids.splice(index, 1)
+            );
           }
           return (UserCart.quatity_Product[index] =
             UserCart.quatity_Product[index] - 1);
@@ -180,6 +185,34 @@ class CartController {
       return new InternalError("Internal Server Error", res).returnError();
     }
     return new ResponseToCreated(updated).res(res);
+  }
+
+  public async getProductsByCart(req: Request, res: Response) {
+    const token = await new CartCore().decodedToken(
+      req.headers.authorization ?? ""
+    );
+    const id = await GetIdByJwtToken(token);
+    if (id === null) {
+      return new Unauthorized("token is required", res).returnError();
+    }
+
+    // verificando se o carrinho existe e se é do msm dono
+    const UserCart = await new CartService(
+      new CartRepository()
+    ).executeGetCartByUserRepository(id);
+    if (UserCart.id === "") {
+      return new BadRequest("This cart not exist", res).returnError();
+    }
+
+    const Products = await new CartService(
+      new CartRepository()
+    ).executeGetProductsByCartRepository(UserCart.id);
+
+    if (!Products) {
+      return new BadRequest("Cart no product", res).returnError();
+    } else {
+      return new ResponseGet(Products).res(res);
+    }
   }
 }
 
