@@ -19,6 +19,8 @@ const PostCartSchema = z.object({
   quatity_Product: z.array(z.number().nonnegative()),
 });
 
+const UpdateCartSchema = z.array(z.string().min(24));
+
 const PostProductInCartSchema = z.array(z.string().min(24));
 
 class CartController {
@@ -78,7 +80,6 @@ class CartController {
       return new BadRequest("full cart", res).returnError();
     }
 
-
     // primeiro verificamos se o produto já existe no carrinho
     const productExist = UserCart.product_ids.filter(
       (product) => product === req.body.product_ids[0]
@@ -112,6 +113,73 @@ class CartController {
       return new InternalError("Internal Server Error", res).returnError();
     }
     return new ResponseToCreated(created).res(res);
+  }
+
+  public async validationRemoveProductCart(
+    req: Request<"", "", DefaultCartType>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const data = { data: req.body.product_ids };
+    ValidationData(UpdateCartSchema, data, next);
+  }
+
+  public async removeProductToCart(
+    req: Request<"", "", DefaultCartType>,
+    res: Response
+  ) {
+    const token = await new CartCore().decodedToken(
+      req.headers.authorization ?? ""
+    );
+    const id = await GetIdByJwtToken(token);
+    if (id === null) {
+      return new Unauthorized("token is required", res).returnError();
+    }
+
+    // verificando se o carrinho existe e se é do msm dono
+    const UserCart = await new CartService(
+      new CartRepository()
+    ).executeGetCartByUserRepository(id);
+    if (UserCart.id === "") {
+      return new BadRequest("This cart not exist", res).returnError();
+    }
+
+    // primeiro verificamos se o produto realmente existe no carrinho
+    const productExist = UserCart.product_ids.filter(
+      (product) => product === req.body.product_ids[0]
+    );
+
+    // se o produto já existe, só aumentamos a quantidade... os index têm qeu ser iguais
+    if (productExist.length > 0) {
+      UserCart.product_ids.map((product, index) => {
+        if (product === req.body.product_ids[0]) {
+          if (UserCart.quatity_Product[index] === 1) {
+            
+            return (UserCart.quatity_Product.splice(index, 1), UserCart.product_ids.splice(index, 1));
+          }
+          return (UserCart.quatity_Product[index] =
+            UserCart.quatity_Product[index] - 1);
+        }
+      });
+    } else {
+      return new BadRequest(
+        "This product not exist in cart",
+        res
+      ).returnError();
+    }
+
+    const updated = await new CartService(
+      new CartRepository()
+    ).executeUpdateCartRepository(
+      id,
+      UserCart.product_ids,
+      UserCart.quatity_Product
+    );
+
+    if (!updated) {
+      return new InternalError("Internal Server Error", res).returnError();
+    }
+    return new ResponseToCreated(updated).res(res);
   }
 }
 

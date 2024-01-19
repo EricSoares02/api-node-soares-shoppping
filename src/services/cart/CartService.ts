@@ -23,7 +23,7 @@ class CartService {
     return commentsByUser;
   }
 
-  public async executeInsertProductInCartRepository(id: string, product_ids: string[], quatity_Product?: number[]) {
+  public async executeInsertProductInCartRepository(id: string, product_ids: string[], quatity_Product: number[]) {
     const created = await this.CartRepository.insertProduct(id, product_ids, quatity_Product);
 
     return created;
@@ -31,6 +31,13 @@ class CartService {
 
   public async executeGetCartByUserRepository(ownerId: string) {
     const created = await this.CartRepository.getCartByUser(ownerId);
+
+    return created;
+  }
+
+
+  public async executeUpdateCartRepository(ownerId: string, product_ids: string[], quatity_Product: number[]) {
+    const created = await this.CartRepository.removeProduct(ownerId, product_ids, quatity_Product);
 
     return created;
   }

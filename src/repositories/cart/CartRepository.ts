@@ -43,7 +43,7 @@ class CartRepository implements ICartRepositories {
   public async insertProduct(
     id: string,
     product_ids: string[],
-    quatity_Product?: number[]
+    quatity_Product: number[]
   ): Promise<DefaultCartType> {
     connect();
     const Cart = await prisma.cart
@@ -107,6 +107,33 @@ class CartRepository implements ICartRepositories {
         product_ids: [],
         quatity_Product: []
       };
+  }
+
+  public async removeProduct(ownerId: string, product_ids: string[], quatity_Product: number[]): Promise<DefaultCartType> {
+    
+    connect();
+    const Cart = await prisma.cart
+      .update({
+        where: {
+          ownerId,
+        },
+        data: {
+          product_ids,
+          quatity_Product
+        },
+      })
+      .finally(diconnect);
+
+    if (Cart) {
+      return Cart;
+    }
+
+    return {
+      id: "",
+      ownerId: "",
+      product_ids: [],
+      quatity_Product: []
+    };
   }
 }
 
