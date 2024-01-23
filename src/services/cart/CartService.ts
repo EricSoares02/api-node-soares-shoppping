@@ -1,10 +1,11 @@
+import { ProductInCart } from "../../interfaces/ICart";
 import { CartRepository } from "../../repositories/cart/CartRepository";
 
 class CartService {
   constructor(private CartRepository: CartRepository) {}
 
-  public async executeCreateCartRepository(ownerId: string, product_ids: string[]) {
-    const created = await this.CartRepository.create(ownerId, product_ids);
+  public async executeCreateCartRepository(ownerId: string, products?: Array<ProductInCart>) {
+    const created = await this.CartRepository.create(ownerId, products);
 
     return created;
   }
@@ -17,14 +18,14 @@ class CartService {
     return commentsByProduct;
   }
 
-  public async executeGetProductsByCartRepository(CartId: string) {
-    const commentsByUser = await this.CartRepository.getProductsByCart(CartId);
+  // public async executeGetProductsByCartRepository(CartId: string) {
+  //   const commentsByUser = await this.CartRepository.getProductsByCart(CartId);
 
-    return commentsByUser;
-  }
+  //   return commentsByUser;
+  // }
 
-  public async executeInsertProductInCartRepository(id: string, product_ids: string[], quatity_Product: number[]) {
-    const created = await this.CartRepository.insertProduct(id, product_ids, quatity_Product);
+  public async executeInsertProductInCartRepository(id: string, products: Array<ProductInCart>) {
+    const created = await this.CartRepository.insertProduct(id, products);
 
     return created;
   }
@@ -36,8 +37,8 @@ class CartService {
   }
 
 
-  public async executeUpdateCartRepository(ownerId: string, product_ids: string[], quatity_Product: number[]) {
-    const created = await this.CartRepository.removeProduct(ownerId, product_ids, quatity_Product);
+  public async executeUpdateCartRepository(ownerId: string, products: Array<ProductInCart>) {
+    const created = await this.CartRepository.removeProduct(ownerId, products);
 
     return created;
   }

@@ -1,29 +1,39 @@
-import { Product } from "./IProduct";
+import { JsonValue } from "@prisma/client/runtime/library";
 
+export type ProductInCart = {
+  id: string;
+  name: string;
+  url_img: string;
+  price_in_cent: number;
+  options: string;
+  storeId: string;
+  quantity: number;
+};
 export type DefaultCartType = {
-    id: string;
-    ownerId: string;
-    product_ids: string[];
-    quatity_Product: number[];
+  id: string;
+  ownerId: string;
+  products: JsonValue
+};
+
+export interface InsertIntemInCartParams{
+  id: string
 }
 
 
-
 export interface ICartRepositories {
-    create(
-        ownerId: string,
-        product_ids: string[]
-    ): Promise<DefaultCartType>;
-  
-    getCart(id: string): Promise<DefaultCartType>;
+  create(ownerId: string, products?: Array<ProductInCart>): Promise<DefaultCartType>;
 
-    insertProduct(id: string, product_ids: string[], quatity_Product: number[]): Promise<DefaultCartType>;
-  
-    getProductsByCart(id: string, ): Promise<Product[]>;
+  getCart(id: string): Promise<DefaultCartType>;
 
-    removeProduct(
-        ownerId: string,
-        product_ids: string[],
-        quatity_Product: number[]
-        ): Promise<DefaultCartType>;
-  }
+  insertProduct(
+    id: string,
+    products: Array<ProductInCart>
+  ): Promise<DefaultCartType>;
+
+  //getProductsByCart(id: string): Promise<ProductInCart[]>;
+
+  removeProduct(
+    ownerId: string,
+    products: Array<ProductInCart>
+  ): Promise<DefaultCartType>;
+}

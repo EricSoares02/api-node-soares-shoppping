@@ -1,6 +1,8 @@
 import { DecodedTokenJwt } from "../../middleware/decodedToken.Jwt";
 import { CartRepository } from "../../repositories/cart/CartRepository"
+import { ProductRepository } from "../../repositories/product/ProductRepository";
 import { CartService } from "../../services/cart/CartService"
+import { ProductService } from "../../services/product/ProductService";
 
 
 class CartCore {
@@ -22,6 +24,17 @@ class CartCore {
         return hashToken
     
       }
+
+    
+    public async getProduct(ProductId: string) {
+        
+        const Product = await new ProductService(new ProductRepository()).executeGetByIdProductRepository(ProductId);
+
+        if (Product.id === '') {
+            return false
+        }
+        return Product
+    }
 
 }
 

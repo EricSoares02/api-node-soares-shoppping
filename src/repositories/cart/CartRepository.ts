@@ -1,22 +1,27 @@
 import { connect, diconnect } from "../../database/database";
-import { DefaultCartType, ICartRepositories } from "../../interfaces/ICart";
-import { Product } from "../../interfaces/IProduct";
+import {
+  DefaultCartType,
+  ICartRepositories,
+  ProductInCart,
+} from "../../interfaces/ICart";
 import { prisma } from "../../services/prisma/prisma";
+
 
 class CartRepository implements ICartRepositories {
   public async create(
     ownerId: string,
-    product_ids: string[]
+    products?: Array<ProductInCart>
   ): Promise<DefaultCartType> {
     connect();
     const createCart = await prisma.cart
       .create({
         data: {
           ownerId,
-          product_ids,
+          products,
         },
       })
       .finally(diconnect);
+
     return createCart;
   }
 
@@ -35,15 +40,13 @@ class CartRepository implements ICartRepositories {
     return {
       id: "",
       ownerId: "",
-      product_ids: [],
-      quatity_Product: []
+      products: []
     };
   }
 
   public async insertProduct(
     id: string,
-    product_ids: string[],
-    quatity_Product: number[]
+    products: Array<ProductInCart>
   ): Promise<DefaultCartType> {
     connect();
     const Cart = await prisma.cart
@@ -52,8 +55,7 @@ class CartRepository implements ICartRepositories {
           id,
         },
         data: {
-          product_ids,
-          quatity_Product
+          products
         },
       })
       .finally(diconnect);
@@ -65,28 +67,27 @@ class CartRepository implements ICartRepositories {
     return {
       id: "",
       ownerId: "",
-      product_ids: [],
-      quatity_Product: []
+      products: []
     };
   }
 
-  public async getProductsByCart(CartId: string): Promise<Product[]> {
-    const Products = await prisma.cart
-      .findFirst({where: {id: CartId}}).product()
-      .finally(diconnect);
+  // public async getProductsByCart(CartId: string): Promise<Product[]> {
+  //   const Products = await prisma.cart
+  //     .findFirst({ where: { id: CartId } })
+  //     .finally(diconnect);
 
-    if (Products) {
-      return Products;
-    }
+  //   if (Products) {
+  //     return Products;
+  //   }
 
-    return [];
-  }
+  //   return [];
+  // }
 
   public async getCartByUser(ownerId: string): Promise<DefaultCartType> {
     const Cart = await prisma.cart
       .findFirst({
         where: {
-          ownerId
+          ownerId,
         },
       })
       .finally(diconnect);
@@ -96,15 +97,16 @@ class CartRepository implements ICartRepositories {
     }
 
     return {
-        id: "",
-        ownerId: "",
-        product_ids: [],
-        quatity_Product: []
-      };
+      id: "",
+      ownerId: "",
+      products: []
+    };
   }
 
-  public async removeProduct(ownerId: string, product_ids: string[], quatity_Product: number[]): Promise<DefaultCartType> {
-    
+  public async removeProduct(
+    ownerId: string,
+    products: Array<ProductInCart>
+  ): Promise<DefaultCartType> {
     connect();
     const Cart = await prisma.cart
       .update({
@@ -112,8 +114,7 @@ class CartRepository implements ICartRepositories {
           ownerId,
         },
         data: {
-          product_ids,
-          quatity_Product
+        products
         },
       })
       .finally(diconnect);
@@ -125,8 +126,7 @@ class CartRepository implements ICartRepositories {
     return {
       id: "",
       ownerId: "",
-      product_ids: [],
-      quatity_Product: []
+      products: []
     };
   }
 }
