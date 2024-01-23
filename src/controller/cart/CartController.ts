@@ -34,7 +34,8 @@ const PostCartSchema = z.object({
     .optional(),
 });
 
-const InsertProductInCartSchema = z.string().min(24);
+const InsertProductInCartIdSchema = z.string().min(24);
+const InsertOptionInCartSchema = z.string().min(3);
 
 class CartController {
   public async validationPostCart(
@@ -65,12 +66,14 @@ class CartController {
   }
 
   public async validationInsertProductCart(
-    req: Request<InsertIntemInCartParams>,
+    req: Request<InsertIntemInCartParams, "", ProductInCart>,
     res: Response,
     next: NextFunction
   ) {
-    const data = { data: req.params.id };
-    ValidationData(InsertProductInCartSchema, data, next);
+    const dataID = { data: req.params.id };
+    const options = { data: req.body.options };
+    ValidationData(InsertProductInCartIdSchema, dataID, next);
+    ValidationData(InsertOptionInCartSchema, options, next);
   }
 
   public async insertProductInCart(
@@ -104,9 +107,7 @@ class CartController {
       return new BadRequest("full cart", res).returnError();
     }
 
-
     const { id: ProductId, name, price_in_cent, storeId, url_img } = GetProduct;
-
 
     // primeiro verificamos se o produto já existe no carrinho
     const productExist = Products.filter(
@@ -122,7 +123,7 @@ class CartController {
         ) {
           return (Products[index].quantity = Products[index].quantity + 1);
         }
-        
+
         const img = url_img[0];
         const { options } = req.body;
         return Products.push({
@@ -137,7 +138,7 @@ class CartController {
       });
     } else {
       // inserindo os novos dados no user cart
-     
+
       const img = url_img[0];
       const { options } = req.body;
       Products.push({
