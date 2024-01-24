@@ -12,6 +12,8 @@ export const router = Router();
 
 // ROTAS PARA PRODUTO
 const product = new ProductController();
+
+
 // rota para criar um produto
 router.post("/produto", new Authorization().authenticationForAdmin,product.validationProductPost, product.create);
 // rota para criar mais de um produto
@@ -27,9 +29,13 @@ router.get("/produtos", product.getAll);
 // rota para pegar produto por id
 router.get("/produto/:id", product.validationProductGet, product.getById);
 
+
+
 // ROTAS PARA USER
 const user = new UserController();
 const specialUser = new SpecialUserController()
+
+
 // rota para criar usuario
 router.post("/user",user.validationRolePost,user.validationUserPost,user.create);
 // rota para criar usuarios especiais
@@ -39,8 +45,9 @@ router.get("/user/", user.validationUserGet, user.getById);
 // rota para logar usuario
 router.post("/login", user.validationUserLogin, user.login);
 
-// ROTAS PARA STORE
 
+
+// ROTAS PARA STORE
 // rota para criar store
 router.post("/store", new Authorization().authenticationForElder, new StoreController().validationStore, new StoreController().create);
 
@@ -59,10 +66,15 @@ router.get("/comment/user", comment.validationCommentGetByUser, comment.getByUse
 
 
 // ROTAS PARA CART 
-
 const cart = new CartController();
 
+//rota para criar carrinho
 router.post('/cart', cart.validationPostCart, cart.create);
-router.post('/cart/insertProduct/:id', cart.validationInsertProductCart, cart.insertProductInCart);
-// router.patch('/cart', cart.validationRemoveProductCart, cart.removeProductToCart);
-// router.get('/cart/product', cart.getProductsByCart)
+// rota para inserir e aumentar item no carrinho
+router.post('/cart/insert-product', cart.validationInsertProductCart, cart.insertProductInCart);
+// rota para diminuir item no carrinho
+router.patch('/cart/less-product', cart.validationLessProductCart, cart.lessProductToCart);
+// rota para pegar o carrinho
+router.get('/cart', cart.getCart);
+// rota para remover um item no carrinho
+router.patch('/cart/remove-product', cart.validationRemoveProductCart, cart.removeProductToCart);

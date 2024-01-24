@@ -18,11 +18,6 @@ class CartService {
     return commentsByProduct;
   }
 
-  // public async executeGetProductsByCartRepository(CartId: string) {
-  //   const commentsByUser = await this.CartRepository.getProductsByCart(CartId);
-
-  //   return commentsByUser;
-  // }
 
   public async executeInsertProductInCartRepository(id: string, products: Array<ProductInCart>) {
     const created = await this.CartRepository.insertProduct(id, products);
