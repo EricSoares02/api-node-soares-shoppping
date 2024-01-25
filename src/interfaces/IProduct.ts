@@ -1,3 +1,10 @@
+import { JsonValue } from "@prisma/client/runtime/library";
+
+type Options = [
+  value1: string[],
+  value2: string[]
+]
+
 export type Product = {
   id: string;
   name: string;
@@ -6,10 +13,21 @@ export type Product = {
   desc: string | null;
   category: string;
   subCategory: string;
-  options: string[];
+  options: JsonValue;
   storeId: string;
-  //comments: Comments[]
 };
+
+export type CreateProductType = {
+  name: string;
+  url_img: string[];
+  price_in_cent: number;
+  desc: string | null;
+  category: string;
+  subCategory: string;
+  options: Options;
+  storeId: string;
+}
+
 
 export enum ECategoryTypes{
     esporte = "esporte",
@@ -36,19 +54,12 @@ export interface IProductQuery extends IProductParams{
 
 export interface IProductRepositories {
   create(
-    name: string,
-    url_img: string[],
-    price_in_cent: number,
-    category: string,
-    subCategory: string,
-    options: string[],
-    storeId: string,
-    desc: string | null
+    data: CreateProductType
   ): Promise<Product>;
 
   getById(id: string): Promise<Product>;
 
   getAll(): Promise<Product[]>;
 
-  update(newProduct: Product): Promise<Product>;
+  update(id: string, newProduct: CreateProductType): Promise<Product>;
 }

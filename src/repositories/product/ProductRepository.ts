@@ -1,31 +1,15 @@
 import { connect, diconnect } from "../../database/database";
-import { Product, IProductRepositories } from "../../interfaces/IProduct";
+import { Product, IProductRepositories, CreateProductType } from "../../interfaces/IProduct";
 import { prisma } from "../../services/prisma/prisma";
 
 class ProductRepository implements IProductRepositories {
   public async create(
-    name: string,
-    url_img: string[],
-    price_in_cent: number,
-    category: string,
-    subCategory: string,
-    options: string[],
-    storeId: string,
-    desc: string | null
+    data: CreateProductType
   ): Promise<Product> {
     connect();
     const createProduct = await prisma.product
       .create({
-        data: {
-          name,
-          url_img,
-          price_in_cent,
-          category,
-          subCategory,
-          options,
-          storeId,
-          desc,
-        },
+        data
       })
       .finally(diconnect);
     return createProduct;
@@ -68,13 +52,13 @@ class ProductRepository implements IProductRepositories {
    
   }
 
-  public async update(newProduct: Product): Promise<Product> {
+
+  public async update(id: string, newProduct: CreateProductType): Promise<Product> {
     connect();
-    const { id: __id, ...product } = newProduct;
     const updateProduct = await prisma.product
       .update({
-        where: { id: __id },
-        data: product,
+        where: { id },
+        data: newProduct,
       })
       .finally(diconnect);
 

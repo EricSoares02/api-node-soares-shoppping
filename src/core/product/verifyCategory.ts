@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { NextFunction, Response } from "express";
 import { ValidationData } from "../../middleware/validationData.Zod";
-import { Product } from "../../interfaces/IProduct";
+import { CreateProductType } from "../../interfaces/IProduct";
 
 enum ECategoryModaType {
     infantil = "infantil",
@@ -61,7 +61,7 @@ enum ECategoryModaType {
   }
 
 
-  function subCategoryValidation(enumValue: any, Product: Product, next:NextFunction) {
+  function subCategoryValidation(enumValue: any, Product: CreateProductType, next:NextFunction) {
     const SubCategorySchema = z.object({
       subCategory: z.nativeEnum(enumValue)
     })
@@ -72,7 +72,7 @@ enum ECategoryModaType {
  class VerifyCategory {
    
 
-    constructor(private Product: Product) {
+    constructor(private Product: CreateProductType) {
       this.Product
     }
 

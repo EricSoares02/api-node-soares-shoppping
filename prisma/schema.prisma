@@ -21,7 +21,7 @@ price_in_cent Int
 desc String?
 category String
 subCategory String
-options String[]
+options Json
 store Store @relation(fields: [storeId], references: [id])
 storeId String @db.ObjectId
 comments Comments[]
