@@ -1,9 +1,10 @@
 import { JsonValue } from "@prisma/client/runtime/library";
 
-type Options = [
-  value1: string[],
-  value2: string[]
-]
+export type ProductOptions = {
+  first_option : string[],
+	second_option: string[],
+  third_option?: string[]
+}
 
 export type Product = {
   id: string;
@@ -24,7 +25,7 @@ export type CreateProductType = {
   desc: string | null;
   category: string;
   subCategory: string;
-  options: Options;
+  options: ProductOptions;
   storeId: string;
 }
 

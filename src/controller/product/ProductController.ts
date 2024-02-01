@@ -32,19 +32,19 @@ const ProductSchema = z.object({
   desc: z.string().optional(),
   subCategory: z.string(),
   category: z.nativeEnum(ECategoryTypes),
-  options: z.array(z.string().array().max(7, "7 é o número máximo de opções")),
 });
+
 
 const IdSchema = z.string().min(24);
 
 class ProductController {
-  public validationProductPost(
+  public async validationProductPost(
     req: Request<IParamsDictionary, "", CreateProductType>,
     res: Response,
     next: NextFunction
   ) {
     const data = { data: req.body };
-    ValidationData(ProductSchema, data, next);
+    await ValidationData(ProductSchema, data, next);
   }
 
   public validationProductGet(
@@ -58,7 +58,7 @@ class ProductController {
 
   public async create(
     req: Request<IParamsDictionary, "", CreateProductType>,
-    res: Response
+    res: Response,
   ) {
     // ---------------------------CHAMANDO CORE E SERVICE -----------------------------
     const core = new ProductCore();
@@ -75,8 +75,11 @@ class ProductController {
 
 
     // ---------------------------VERIFICANDO AS SUBCATEGORIAS DO PRODUTO-----------------------------
-    core.verifyCategories(req.body);
+    core.verifyCategories(req.body, res);
 
+    // ---------------------------VERIFICANDO AS OPÇÕES DO PRODUTO-----------------------------
+    const {options,category, subCategory} = req.body
+    core.verifyOptions(options, {category, subCategory}, res)
 
     // ---------------------------PEGANDO A LOJA PARA O PRODUTO-----------------------------
     const {storeId} = await core.getStoreId(UserId);
@@ -107,7 +110,7 @@ class ProductController {
 
   public async update(
     req: Request<IParamsDictionary, "", CreateProductType>,
-    res: Response
+    res: Response,
   ) {
     // ---------------------------CHAMANDO CORE E SERVICE -----------------------------
     const core = new ProductCore();
@@ -130,7 +133,7 @@ class ProductController {
     }
 
     // ---------------------------VERIFICANDO AS SUBCATEGORIAS DO PRODUTO-----------------------------
-    core.verifyCategories(req.body);
+    core.verifyCategories(req.body, res);
 
     // ---------------------------VERIFICANDO SE A LOJA EXISTE -----------------------------
     const storeExist = await core.StoreExist(req.body.storeId);

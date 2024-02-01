@@ -1,4 +1,5 @@
-import { CreateProductType } from "../../interfaces/IProduct";
+import { Response } from "express";
+import { CreateProductType, ProductOptions } from "../../interfaces/IProduct";
 import { DecodedTokenJwt } from "../../middleware/decodedToken.Jwt";
 import { ProductRepository } from "../../repositories/product/ProductRepository";
 import { StoreRepository } from "../../repositories/store/CreateStoreRepository";
@@ -7,6 +8,7 @@ import { ProductService } from "../../services/product/ProductService";
 import { StoreService } from "../../services/store/createStoreService";
 import { UserService } from "../../services/user/UserService";
 import { VerifyCategory } from "./verifyCategory";
+import { verifyOptions } from "./verifyOptions";
 
 
 
@@ -21,10 +23,10 @@ class ProductCore {
     return false;
   }
 
-  public async verifyCategories(Product: CreateProductType) {
+  public async verifyCategories(Product: CreateProductType, res: Response) {
     const verify = new VerifyCategory(Product);
 
-    verify.validationCategoryAndSubCategory;
+   await verify.validationCategoryAndSubCategory(res);
   }
 
   public async verifyProduct(id: string) {
@@ -66,10 +68,13 @@ class ProductCore {
     return await new UserService(new UserRepository()).executeGetByIdUserRepository(id);
 
    }
-  // public async verifyOptions(options: ) {
-    
-  // }
 
+   public async verifyOptions( options: ProductOptions, prop: {
+    category: string,
+    subCategory: string}, res: Response) {
+    
+    await new verifyOptions(options, {category:prop.category, subCategory: prop.subCategory}).validationOptions(res);
+   }
 }
 
 export { ProductCore };

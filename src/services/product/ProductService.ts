@@ -4,7 +4,6 @@ import { ProductRepository } from "../../repositories/product/ProductRepository"
 class ProductService {
   constructor(private ProductRepository: ProductRepository) {}
 
-
   public async executeCreateProductRepository(
     Product: CreateProductType
   ) {

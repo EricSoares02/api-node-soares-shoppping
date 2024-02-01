@@ -12,19 +12,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Product{
 
-id String @id @default(auto()) @map("_id") @db.ObjectId
+model Product {
+id  String @id @default(auto()) @map("_id") @db.ObjectId
 name String
-url_img String[]
-price_in_cent Int
-desc String?
-category String
-subCategory String
+price Int 
+desc String 
+photos String[] 
 options Json
 store Store @relation(fields: [storeId], references: [id])
 storeId String @db.ObjectId
+category Json
 comments Comments[]
+}
+
+model Category{
+id String @id @default(auto()) @map("_id") @db.ObjectId
+name String @unique
+subcategories Subcategory[]
+}
+
+model Subcategory{
+id String @id @default(auto()) @map("_id") @db.ObjectId
+name String 
+category Category @relation(fields: [categoryId], references: [id])
+categoryId String @db.ObjectId
 }
 
 model Cart{
@@ -34,17 +46,35 @@ ownerId String @unique @db.ObjectId
 products Json?
 }
 
-model User{
+model Store{
+id String @id @default(auto()) @map("_id") @db.ObjectId
+name String
+photo String
+cnpj String @unique
+desc String?
+products Product[]
+admins Admin[]
+}
 
+model Admin{
+id String @id @default(auto()) @map("_id") @db.ObjectId
+first_name String  
+last_name String  
+photo String?
+email String @unique
+password String 
+role String @default("admin")
+store Store? @relation(fields: [storeId], references: [id])
+storeId String? @db.ObjectId
+}
+
+model User{
 id String @id @default(auto()) @map("_id") @db.ObjectId
 first_name String
 last_name String
-url_img String?
+photo String?
 email String @unique
 password String 
-role String @default("user")
-store Store? @relation(fields: [storeId], references: [id])
-storeId String? @db.ObjectId
 requests Request[]
 comments Comments[]
 likes LikesComment[]
@@ -52,7 +82,6 @@ cart   Cart?
 }
 
 model Comments {
-
 id String @id @default(auto()) @map("_id") @db.ObjectId
 author   User   @relation(fields: [authorId], references: [id])
 authorId String @db.ObjectId
@@ -68,31 +97,16 @@ model LikesComment {
 id String @id @default(auto()) @map("_id") @db.ObjectId
 author   User   @relation(fields: [authorId], references: [id])
 authorId String @db.ObjectId
-commentLiked Comments? @relation(fields: [commentId], references: [id])
-commentId String? @db.ObjectId
-}
-
-model Store {
-
-id String @id @default(auto()) @map("_id") @db.ObjectId
-name String
-email String @unique
-password String 
-url_img String
-cnpj Int @unique
-desc String?
-products Product[]
-admins User[]
-
+commentLiked Comments @relation(fields: [commentId], references: [id])
+commentId String @db.ObjectId
+makedAt DateTime @default(now())
 }
 
 model Request{
-
 id String @id @default(auto()) @map("_id") @db.ObjectId
 state String @default("processando")
 date DateTime @default(now())
 delivered DateTime? 
 payer User? @relation(fields: [payerId], references: [id])
 payerId String? @db.ObjectId
-
 }

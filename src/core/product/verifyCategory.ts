@@ -1,7 +1,8 @@
 import { z } from "zod";
-import { NextFunction, Response } from "express";
-import { ValidationData } from "../../middleware/validationData.Zod";
+import { Response } from "express";
 import { CreateProductType } from "../../interfaces/IProduct";
+import { IDataValidations } from "../../interfaces/IDataValidations";
+import { BadRequest } from "../../middleware/errors.express";
 
 enum ECategoryModaType {
     infantil = "infantil",
@@ -11,7 +12,7 @@ enum ECategoryModaType {
     vestido = "vestido",
     camisa = "camisa",
   }
-  
+   
   enum ECategoryEsporteType {
     camisa = "camisa",
     tenis = "tenis",
@@ -60,14 +61,23 @@ enum ECategoryModaType {
     bicicleta = "bicicleta",
   }
 
+  
+    function Validation(enumType: any, category: string, res: Response) {
+      
+      const SubCategorySchema = z.object({
+        subCategory: z.nativeEnum(enumType)
+      })
 
-  function subCategoryValidation(enumValue: any, Product: CreateProductType, next:NextFunction) {
-    const SubCategorySchema = z.object({
-      subCategory: z.nativeEnum(enumValue)
-    })
-    const data = {data:Product}
-    ValidationData(SubCategorySchema, data, next);
-  }
+      try {
+        SubCategorySchema.parse(category)
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+
+        return new BadRequest("Some property is wrong or missing", res).returnError()
+        }
+      }
+    }
+ 
 
  class VerifyCategory {
    
@@ -76,41 +86,42 @@ enum ECategoryModaType {
       this.Product
     }
 
-    public validationCategoryAndSubCategory(next:NextFunction, res:Response) {
+    public validationCategoryAndSubCategory(res:Response) {
+      const data = this.Product.subCategory;
       switch (this.Product.category) {
         case "moda":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryModaType, this.Product, next);
+          Validation(ECategoryModaType, data, res);
           
 
           break;
         case "esporte":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryEsporteType, this.Product, next);
+          Validation(ECategoryEsporteType, data, res);
           
           break;
         case "informatica":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryInformaticaType, this.Product, next);
+          Validation(ECategoryInformaticaType, data, res);
           
           break;
         case "celular":
           break;
         case "bebida":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryBebidaType, this.Product, next);
+          Validation(ECategoryBebidaType, data, res);
        
           break;
         case "eletrodomestico":
           break;
         case "ferramenta":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryFerramentaType, this.Product, next);
+          Validation(ECategoryFerramentaType, data, res);
           
           break;
         case "brinquedo":
           // validando a sub categoria do produto
-          subCategoryValidation(ECategoryBrinquedoType, this.Product, next);
+          Validation(ECategoryBrinquedoType, data, res);
          
           break;
         case "automovel":

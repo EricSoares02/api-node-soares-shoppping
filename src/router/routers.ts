@@ -6,9 +6,29 @@ import { CommentController } from "../controller/comment/CommentController";
 import { Authorization } from "../middleware/auth/authorization.express";
 import { SpecialUserController } from "../controller/user/SpecialUserController";
 import { CartController } from "../controller/cart/CartController";
+import { CategoryController } from "../controller/category/CategoryController";
 
 
 export const router = Router();
+
+
+//ROTAS PARA CATEGORIAS
+
+router.post('category', new CategoryController().create);
+router.patch('category', new CategoryController().update);
+router.get('category/:id', new CategoryController().get);
+router.get('category/name/:name', new CategoryController().getByName);
+router.delete('category', new CategoryController().delete);
+
+
+
+
+
+
+
+
+
+
 
 // ROTAS PARA PRODUTO
 const product = new ProductController();

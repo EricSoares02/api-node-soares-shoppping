@@ -2,6 +2,7 @@ import { connect, diconnect } from "../../database/database";
 import { Product, IProductRepositories, CreateProductType } from "../../interfaces/IProduct";
 import { prisma } from "../../services/prisma/prisma";
 
+
 class ProductRepository implements IProductRepositories {
   public async create(
     data: CreateProductType
