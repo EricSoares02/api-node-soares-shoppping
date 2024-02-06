@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { Admin } from "../../interfaces/admins/admin";
-import { EmailCheckModule } from "../../middleware/@findEmailModule/searchEmail";
-import { Response } from "express";
-import bcrypt from "bcrypt";
 import { ZodValidationData } from "../../middleware/validationData.Zod";
+import { BcryptMiddlewareMod } from "../../middleware/bcrypt/PasswordMiddleware";
 
 const EmailSchema = z.string().email();
 const IdSchema = z.string().length(24);
@@ -56,10 +54,6 @@ class AdminCore {
     }
   }
 
-  async findEmailModule(email: string, res: Response) {
-    return new EmailCheckModule(email, res).find();
-  }
-
   async StoreIdModule(creator: Partial<Admin> | null, storeId: string) {
     if (creator?.storeId) {
       return creator.storeId;
@@ -68,6 +62,7 @@ class AdminCore {
     if (creator?.role === "elder") {
       return storeId;
     }
+    return ''
   }
 
   async validationData(data: Admin) {
@@ -75,9 +70,9 @@ class AdminCore {
   }
 
   async encryptPassword(password: string){
-    const hashPassword = await bcrypt.hash(password, 10);
-    return hashPassword;
+    return new BcryptMiddlewareMod(password).ecrypt()
   }
 }
+
 
 export { AdminCore };

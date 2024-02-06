@@ -9,6 +9,7 @@ import { Router } from "express";
 import { CategoryController } from "../controller/category/CategoryController";
 import { ElderController } from "../controller/elder/ElderController";
 import { UserController } from "../controller/user/UserController";
+import { AdminController } from "../controller/admins/AdminController";
 
 
 export const router = Router();
@@ -33,12 +34,26 @@ router.get('/elder/email/:email', new ElderController().getByEmail);
 router.delete('/elder', new ElderController().delete);
 
 
+
+
 //ROTAS PARA USER
 router.post('/user', new UserController().create);
 router.patch('/user', new UserController().update);
 router.get('/user/:id', new UserController().get);
 router.get('/user/email/:email', new UserController().getByEmail);
 router.delete('/user', new UserController().delete);
+
+
+
+
+//ROTAS PARA ADMIN
+router.post('/admin', new AdminController().create);
+router.patch('/admin', new AdminController().update);
+router.get('/admin/:id', new AdminController().get);
+router.get('/admin/email/:email', new AdminController().getByEmail);
+router.delete('/admin', new AdminController().delete);
+
+
 
 
 // ROTAS PARA PRODUTO

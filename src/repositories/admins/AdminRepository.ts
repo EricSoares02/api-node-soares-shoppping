@@ -8,15 +8,7 @@ class AdminRepository implements IAdminRepository{
    async create(data: Admin): Promise<Partial<Admin>>  {
         connect();
         const created = await prisma.admin.create({
-            data:{
-                email: data.email,
-                first_name: data.first_name,
-                last_name: data.last_name,
-                password: data.password,
-                photo: data.photo,
-                role: data.role,
-                storeId: data.storeId
-            }
+            data
             }
         ).finally(diconnect);
         const {password: pass, ...hashAdmin} = created;
