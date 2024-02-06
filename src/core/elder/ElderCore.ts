@@ -1,6 +1,8 @@
 import { z } from "zod";
-import { ValidationData } from "../../middleware/validationData.Zod";
+
 import { Elder } from "../../interfaces/elder/elder";
+import { ZodValidationData } from "../../middleware/validationData.Zod";
+
 
 const EmailSchema = z.string().email();
 const IdSchema = z.string().length(24);
@@ -18,15 +20,15 @@ const ElderSchema = z.object({
 class ElderCore {
     
     async validationEmail(email: string) {
-        return await ValidationData(EmailSchema, email);
+        return await new ZodValidationData(EmailSchema, email).parse();
       }
     
     async validationId(id: string) {
-        return await ValidationData(IdSchema, id);
+        return await new ZodValidationData(IdSchema, id).parse();
       }
 
     async validationData(data: Elder) {
-        return await ValidationData(ElderSchema, data);
+        return await new ZodValidationData(ElderSchema, data).parse();
       }
 
 }

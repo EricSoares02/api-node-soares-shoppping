@@ -1,11 +1,6 @@
 import { Elder } from "./elder";
 
 
-export interface IElderParams{
-    id: string
-    email: string
-}
-
 export interface IElderRepository {
 
 

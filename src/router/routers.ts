@@ -25,11 +25,11 @@ router.delete('category', new CategoryController().delete);
 
 
 //ROTAS PARA ELDER
-router.post('elder', new ElderController().create);
-router.patch('elder', new ElderController().update);
-router.get('elder/:id', new ElderController().get);
-router.get('elder/email/:email', new ElderController().getByEmail);
-router.delete('elder', new ElderController().delete);
+router.post('/elder', new ElderController().create);
+router.patch('/elder', new ElderController().update);
+router.get('/elder/:id', new ElderController().get);
+router.get('/elder/email/:email', new ElderController().getByEmail);
+router.delete('/elder', new ElderController().delete);
 
 
 

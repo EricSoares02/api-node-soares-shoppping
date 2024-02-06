@@ -9,25 +9,23 @@ import { ElderRepository } from "../../repositories/elder/ElderRepository";
 
 class EmailCheckModule {
   private email;
-  private res;
   private findEmail: any
-  constructor(email: string, res: Response) {
+  constructor(email: string) {
     this.email = email;
-    this.res = res;
   }
 
   async find() {
   
     this.findEmail = await new AdminService(
-      new AdminRepository(),
-      this.res
+      new AdminRepository()
     ).executeGetByEmail(this.email);
+    
     if (!this.findEmail) {
       this.findEmail = await new UserService(new UserRepository()).executeGetByEmail(
         this.email
       );
       if (!this.findEmail) {
-        this.findEmail = await new ElderService(new ElderRepository(), this.res).executeGetByEmail(
+        this.findEmail = await new ElderService(new ElderRepository()).executeGetByEmail(
           this.email
         );
       }

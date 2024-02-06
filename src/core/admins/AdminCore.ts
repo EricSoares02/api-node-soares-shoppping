@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { ValidationData } from "../../middleware/validationData.Zod";
 import { Admin } from "../../interfaces/admins/admin";
 import { EmailCheckModule } from "../../middleware/@findEmailModule/searchEmail";
 import { Response } from "express";
 import bcrypt from "bcrypt";
+import { ZodValidationData } from "../../middleware/validationData.Zod";
 
 const EmailSchema = z.string().email();
 const IdSchema = z.string().length(24);
@@ -27,11 +27,11 @@ const AdminSchema = z.object({
 
 class AdminCore {
   async validationEmail(email: string) {
-    return await ValidationData(EmailSchema, email);
+    return await new ZodValidationData(EmailSchema, email).parse();
   }
 
   async validationId(id: string) {
-    return await ValidationData(IdSchema, id);
+    return await new ZodValidationData(IdSchema, id).parse();
   }
 
   validationRole(role: string, creatorRole: string | undefined) {
@@ -71,7 +71,7 @@ class AdminCore {
   }
 
   async validationData(data: Admin) {
-    return await ValidationData(AdminSchema, data);
+    return await new ZodValidationData(AdminSchema, data).parse();
   }
 
   async encryptPassword(password: string){
