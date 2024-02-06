@@ -28,8 +28,18 @@ class ElderService{
             return null
         }
 
+        //CRIANDO UM NOVO ELDER E ENCRIPTANDO A SENHA
+        const elder: Elder = {
+            email: data.email,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            id: data.id,
+            password: await new ElderCore().encryptingPassword(data.password),
+            role: data.role
+        }
+
         //CRIANDO O ELDER E RETORNANDO
-        const created = await this.ElderRepository.create(data);
+        const created = await this.ElderRepository.create(elder);
         return created
     }
 

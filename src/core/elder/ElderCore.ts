@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Elder } from "../../interfaces/elder/elder";
 import { ZodValidationData } from "../../middleware/validationData.Zod";
+import { BcryptMiddlewareMod } from "../../middleware/bcrypt/PasswordMiddleware";
 
 
 const EmailSchema = z.string().email();
@@ -30,6 +31,10 @@ class ElderCore {
     async validationData(data: Elder) {
         return await new ZodValidationData(ElderSchema, data).parse();
       }
+
+    encryptingPassword(password: string){
+      return new BcryptMiddlewareMod(password).ecrypt()
+    }
 
 }
 
