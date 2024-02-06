@@ -1,9 +1,5 @@
 import { User } from "./user";
 
-export interface ILogin {
-    email: string;
-    password: string;
-  }
 
 export interface IUserRepository {
     

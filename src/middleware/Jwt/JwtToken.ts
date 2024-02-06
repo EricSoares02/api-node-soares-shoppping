@@ -32,6 +32,14 @@ class JwtMiddleware {
         return null
     }
 
+
+    GenereteToken(id: string){
+        return Jwt.sign({ id: id }, process.env.JWT_PASS ?? "", {
+            expiresIn: "1h",
+          });
+    }
+
+
 }
 
 export {JwtMiddleware}

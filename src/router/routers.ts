@@ -10,6 +10,7 @@ import { CategoryController } from "../controller/category/CategoryController";
 import { ElderController } from "../controller/elder/ElderController";
 import { UserController } from "../controller/user/UserController";
 import { AdminController } from "../controller/admins/AdminController";
+import { LoginController } from "../controller/login/loginController";
 
 
 export const router = Router();
@@ -52,6 +53,12 @@ router.patch('/admin', new AdminController().update);
 router.get('/admin/:id', new AdminController().get);
 router.get('/admin/email/:email', new AdminController().getByEmail);
 router.delete('/admin', new AdminController().delete);
+
+
+
+
+//ROTA DE LOGIN
+router.post('/login', new LoginController().make);
 
 
 
