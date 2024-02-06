@@ -1,14 +1,30 @@
-import { Schema, z } from "zod";
+import { Schema } from "zod";
 
- function ValidationData(Schema: Schema, data: any) {
-  try {
-    Schema.parse(data)
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.log("Some property is wrong or missing: " + error.issues);
-    
-    }
+
+class ZodValidationData{
+
+  private Schema
+  private data
+
+  constructor(Schema: Schema, data: any){
+    this.Schema = Schema
+    this.data = data
   }
+
+  parse(){
+    
+   const result = this.Schema.safeParse(this.data);
+    
+   if (!result.success) {
+    return false
+  } else {
+    return true
+  }
+
+  }
+
+
 }
 
-export { ValidationData };
+
+export { ZodValidationData };
