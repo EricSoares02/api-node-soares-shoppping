@@ -1,4 +1,4 @@
-import { User } from "../../interfaces/IUser";
+import { User } from "../../interfaces/user/user";
 
 class verifyAuthorizedUser {
   constructor(protected securityLvl: number, protected user: Partial<User>) {

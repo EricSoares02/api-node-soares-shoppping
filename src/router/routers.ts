@@ -8,6 +8,7 @@ import { Router } from "express";
 // import { CartController } from "../controller/cart/CartController";
 import { CategoryController } from "../controller/category/CategoryController";
 import { ElderController } from "../controller/elder/ElderController";
+import { UserController } from "../controller/user/UserController";
 
 
 export const router = Router();
@@ -15,11 +16,11 @@ export const router = Router();
 
 //ROTAS PARA CATEGORIAS
 
-router.post('category', new CategoryController().create);
-router.patch('category', new CategoryController().update);
-router.get('category/:id', new CategoryController().get);
-router.get('category/name/:name', new CategoryController().getByName);
-router.delete('category', new CategoryController().delete);
+router.post('/category', new CategoryController().create);
+router.patch('/category', new CategoryController().update);
+router.get('/category/:id', new CategoryController().get);
+router.get('/category/name/:name', new CategoryController().getByName);
+router.delete('/category', new CategoryController().delete);
 
 
 
@@ -32,7 +33,12 @@ router.get('/elder/email/:email', new ElderController().getByEmail);
 router.delete('/elder', new ElderController().delete);
 
 
-
+//ROTAS PARA USER
+router.post('/user', new UserController().create);
+router.patch('/user', new UserController().update);
+router.get('/user/:id', new UserController().get);
+router.get('/user/email/:email', new UserController().getByEmail);
+router.delete('/user', new UserController().delete);
 
 
 // ROTAS PARA PRODUTO
@@ -56,9 +62,7 @@ router.delete('/elder', new ElderController().delete);
 
 
 
-// // ROTAS PARA USER
-// const user = new UserController();
-// const specialUser = new SpecialUserController()
+
 
 
 // // rota para criar usuario

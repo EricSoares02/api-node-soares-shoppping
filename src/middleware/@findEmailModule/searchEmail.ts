@@ -1,4 +1,3 @@
-import { Response } from "express";
 import { AdminRepository } from "../../repositories/admins/AdminRepository";
 import { AdminService } from "../../services/admins/AdminService";
 import { UserService } from "../../services/user/UserService";
