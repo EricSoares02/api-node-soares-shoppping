@@ -11,18 +11,27 @@ import { ElderController } from "../controller/elder/ElderController";
 import { UserController } from "../controller/user/UserController";
 import { AdminController } from "../controller/admins/AdminController";
 import { LoginController } from "../controller/login/loginController";
+import { SubCategoryController } from "../controller/subCategory/SubCategoryController";
 
 
 export const router = Router();
 
 
 //ROTAS PARA CATEGORIAS
-
 router.post('/category', new CategoryController().create);
 router.patch('/category', new CategoryController().update);
 router.get('/category/:id', new CategoryController().get);
 router.get('/category/name/:name', new CategoryController().getByName);
 router.delete('/category', new CategoryController().delete);
+
+
+
+
+//ROTAS PARA SUBCATEGORIAS
+router.post('/subcategory', new SubCategoryController().create);
+router.patch('/subcategory', new SubCategoryController().update);
+router.get('/subcategory/:id', new SubCategoryController().get);
+router.delete('/subcategory', new SubCategoryController().delete);
 
 
 

@@ -1,9 +1,16 @@
  
-class SubCategory{
+type SubCategoryType = {
+    id: string,
+    name: string,
+    categoryId: string
+}
 
-    private id: string
-    private name: string
-    private categoryId: string
+
+class SubCategory implements SubCategoryType{
+
+     id: string
+     name: string
+     categoryId: string
 
     constructor(id: string, name: string, categoryId: string){
         this.id = id
@@ -11,19 +18,10 @@ class SubCategory{
         this.categoryId = categoryId
     }
 
-    getProperties(){
-       return {
-        id: this.id,
-        name: this.name,
-        categoryId: this.categoryId }
-    }
-}
-
-type ISubCategory = {
-     id: string,
-     name: string,
-     categoryId: string
+    
 }
 
 
-export { SubCategory, ISubCategory }
+
+
+export { SubCategory, SubCategoryType }
