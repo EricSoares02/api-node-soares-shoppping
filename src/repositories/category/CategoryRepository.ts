@@ -1,13 +1,13 @@
 import { connect, diconnect } from "../../database/database";
-import { CategoryType } from "../../interfaces/category/category";
-import { CategoryTypeResponseToCreate, ICategoryRepository } from "../../interfaces/category/category.repository";
+import { Category } from "../../interfaces/category/category";
+import { ICategoryRepository } from "../../interfaces/category/category.repository";
 import { prisma } from "../../services/prisma/prisma";
 
 
 class CategoryRepository implements ICategoryRepository{
 
 
-   async create(data: CategoryType): Promise<CategoryTypeResponseToCreate> {    
+   async create(data: Category): Promise<Category> {    
         connect();
         const categoryCreated = await prisma.category.create({
             data: {
@@ -18,7 +18,8 @@ class CategoryRepository implements ICategoryRepository{
         return categoryCreated
     }
 
-    async update(data: CategoryType): Promise<CategoryType> {
+
+    async update(data: Category): Promise<Category> {
     
         connect();
         const categoryUpdated = await prisma.category.update({
@@ -31,33 +32,22 @@ class CategoryRepository implements ICategoryRepository{
         return categoryUpdated   
     }
 
-    async getCategory(id: string): Promise<CategoryType> {
+
+    async get(id: string): Promise<Category | null> {
         connect();
         const category = await prisma.category.findFirst({
             where: {id}
         }).finally(diconnect);
 
-        if (!category) {
-            return {
-                id: '',
-                name: ''
-            }
-        }
         return category   
     }
 
-    async getCategoryByName(name: string): Promise<CategoryType> {
+    async getByName(name: string): Promise<Category | null> {
         connect();
         const category = await prisma.category.findFirst({
             where: {name}
         }).finally(diconnect);
 
-        if (!category) {
-            return {
-                id: '',
-                name: ''
-            }
-        }
         return category   
     }
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { CategoryType } from "../../interfaces/category/category";
+import { Category } from "../../interfaces/category/category";
 import { ZodValidationData } from "../../middleware/validationData.Zod";
 
 const IdSchema = z.string().length(24);
@@ -19,7 +19,7 @@ class CategoryCore {
     return await new ZodValidationData(NameSchema, name).parse();
   }
 
-  async validationData(data: CategoryType) {
+  async validationData(data: Category) {
     return await new ZodValidationData(DataSchema, data).parse();
   }
 }

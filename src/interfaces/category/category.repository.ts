@@ -1,21 +1,16 @@
-import { CategoryType } from "./category";
+import { Category } from "./category";
 
-export type CategoryTypeResponseToCreate = {
-    id: string
-    name: string 
-    subcategories?: string[] 
-}
 
 
 export interface ICategoryRepository {
 
-    create(data: CategoryType): Promise<CategoryTypeResponseToCreate>
+    create(data: Category): Promise<Category>
 
-    update(data: CategoryType): Promise<CategoryType>
+    update(data: Category): Promise<Category>
 
-    getCategory(id: string): Promise<CategoryType>
+    get(id: string): Promise<Category | null>
 
-    getCategoryByName(name: string): Promise<CategoryType>
+    getByName(name: string): Promise<Category | null>
 
     delete(id: string): Promise<void>
 }
