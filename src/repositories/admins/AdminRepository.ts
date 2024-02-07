@@ -77,5 +77,17 @@ class AdminRepository implements IAdminRepository{
 
         return
     }
+
+    async login(email: string): Promise<Admin | null>{
+        connect();
+        const admin = await prisma.admin.findFirst({
+            where: {
+                email
+            }
+            }
+        ).finally(diconnect);
+        
+        return admin 
+    }
 }
 export {AdminRepository}

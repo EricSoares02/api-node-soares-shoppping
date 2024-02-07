@@ -103,6 +103,18 @@ class UserService {
             await this.UserRepository.delete(id);
         }
   }
+
+  async executeLogin(email: string) {
+
+    //VERIFICANDO SE O EMAIL É VÁLIDO
+    if (!await new UserCore().validationEmail(email)) {
+      return null;
+    }
+
+    // FAZENDO LOGIN
+    const login = await this.UserRepository.login(email);
+    return login;
+  }
 }
 
 export { UserService };

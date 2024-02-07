@@ -1,3 +1,4 @@
+import { AdminRepository } from "../../../repositories/admins/AdminRepository";
 import { ElderRepository } from "../../../repositories/elder/ElderRepository";
 import { UserRepository } from "../../../repositories/user/UserRepository";
 import { AdminService } from "../../../services/admins/AdminService";
@@ -14,12 +15,12 @@ class LoginMiddleware{
 
     async searchUser(){
 
-        let user = await new UserService(new UserRepository()).executeGetByEmail(this.email)
+        let user = await new UserService(new UserRepository()).executeLogin(this.email)
 
         if (!user) {
-            user = await new AdminService(new UserRepository()).executeGetByEmail(this.email);
+            user = await new AdminService(new AdminRepository()).executeLogin(this.email);
             if (!user) {
-                user = await new ElderService(new ElderRepository()).executeGetByEmail(this.email)
+                user = await new ElderService(new ElderRepository()).executeLogin(this.email)
             }
         }
 
@@ -29,12 +30,14 @@ class LoginMiddleware{
 
     async login(){
 
-        const user = await this.searchUser()
+        const user = await this.searchUser();
+        
         if(!user){
             return user 
         }
 
         const passwordIsEqual = await new BcryptMiddlewareMod(this.password).comparePassword(user.password ?? '')
+        
         if (!passwordIsEqual) {
             return null
         }

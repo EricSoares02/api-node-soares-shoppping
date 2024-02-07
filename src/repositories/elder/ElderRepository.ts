@@ -77,6 +77,18 @@ async delete(id: string): Promise<void> {
     return 
 }
 
+async login(email: string): Promise<Elder | null>{
+    connect();
+    const elder = await prisma.elder.findFirst({
+        where: {
+            email
+        }
+        }
+    ).finally(diconnect);
+    
+    return elder 
+}
+
 }
 
 export { ElderRepository }

@@ -82,6 +82,18 @@ async delete(id: string): Promise<void> {
       .finally(diconnect);
     return;
   }
+
+async login(email: string): Promise<User | null>{
+    connect();
+    const user = await prisma.user.findFirst({
+        where: {
+            email
+        }
+        }
+    ).finally(diconnect);
+    
+    return user 
+}
 }
 
 export { UserRepository };

@@ -17,7 +17,7 @@ async create(req: Request<'', '', Elder>, res: Response){
         if(!id){
             return new Unauthorized('Token Is Required!',res).returnError()
         }
-
+    
     //CRIANDO ELDER
         const elder = await new ElderService(new ElderRepository()).executeCreate(req.body, id)
         if (!elder) {

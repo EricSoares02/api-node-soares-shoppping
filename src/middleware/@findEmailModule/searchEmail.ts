@@ -4,11 +4,12 @@ import { UserService } from "../../services/user/UserService";
 import { UserRepository } from "../../repositories/user/UserRepository";
 import { ElderService } from "../../services/elder/ElderService";
 import { ElderRepository } from "../../repositories/elder/ElderRepository";
+import { User } from "../../interfaces/user/user";
 
 
 class EmailCheckModule {
   private email;
-  private findEmail: any
+  private findEmail: Partial<User> | null = null
   constructor(email: string) {
     this.email = email;
   }
@@ -17,20 +18,24 @@ class EmailCheckModule {
   
     this.findEmail = await new AdminService(
       new AdminRepository()
-    ).executeGetByEmail(this.email);
+    ).executeGetByEmail(this.email) ?? await new UserService(new UserRepository()).executeGetByEmail(
+      this.email
+    );
     
-    if (!this.findEmail) {
-      this.findEmail = await new UserService(new UserRepository()).executeGetByEmail(
+      
+    if(!this.findEmail){
+      this.findEmail = await new ElderService(new ElderRepository()).executeGetByEmail(
         this.email
       );
-      if (!this.findEmail) {
-        this.findEmail = await new ElderService(new ElderRepository()).executeGetByEmail(
-          this.email
-        );
-      }
     }
 
-    return this.findEmail;
+      if (!this.findEmail) {
+        return false
+      } else {
+        return true
+      }
+
+    
   }
 }
 

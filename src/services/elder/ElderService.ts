@@ -17,12 +17,13 @@ class ElderService{
         if (!await new ElderCore().validationData(data)) {
             return null
         }
-
+        
         //VERIFICANDO SE O EMAIL EXISTE NO DATABASE
         if (await new EmailCheckModule(data.email).find()) {
+            console.log('passou')
             return null
         }
-
+        
         //VERIFICANDO SE O CRIADOR É UM ELDER
         if(!await this.executeGet(creatorId)){
             return null
@@ -37,6 +38,7 @@ class ElderService{
             password: await new ElderCore().encryptingPassword(data.password),
             role: data.role
         }
+      
 
         //CRIANDO O ELDER E RETORNANDO
         const created = await this.ElderRepository.create(elder);
@@ -107,6 +109,17 @@ class ElderService{
         
     }
 
+    async executeLogin(email: string){
+
+        //VERIFICANDO SE O EMAIL É VÁLIDO 
+       if (!await new ElderCore().validationEmail(email)) {
+        return null
+       } 
+
+        // FAZENDO LOGIN 
+        const login = await this.ElderRepository.login(email);
+        return login
+    }
 }
 
 export {ElderService}

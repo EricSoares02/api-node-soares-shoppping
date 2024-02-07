@@ -120,6 +120,18 @@ async executeDelete(id: string){
       await this.AdminRepository.delete(id);
   }
 }
+
+async executeLogin(email:string){
+
+  //VERIFICANDO SE O EMAIL É VÁLIDO
+  if (!await new AdminCore().validationEmail(email)) {
+    return null;
+  }
+
+  //FAZENDO LOGIN
+  const login = await this.AdminRepository.login(email);
+  return login
+}
 }
 
 export {AdminService}
