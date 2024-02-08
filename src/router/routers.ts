@@ -12,6 +12,7 @@ import { UserController } from "../controller/user/UserController";
 import { AdminController } from "../controller/admins/AdminController";
 import { LoginController } from "../controller/login/loginController";
 import { SubCategoryController } from "../controller/subCategory/SubCategoryController";
+import { StoreController } from "../controller/store/StoreController";
 
 
 export const router = Router();
@@ -68,6 +69,19 @@ router.delete('/admin', new AdminController().delete);
 
 //ROTA DE LOGIN
 router.post('/login', new LoginController().make);
+
+
+
+
+
+//ROTAS PARA STORE
+router.post('/store', new StoreController().create);
+router.patch('/store', new StoreController().update);
+router.get('/store/:id', new StoreController().get);
+router.get('/store/cnpj/:cnpj', new StoreController().getByCnpj);
+router.delete('/store', new StoreController().delete);
+
+
 
 
 
