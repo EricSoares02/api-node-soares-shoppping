@@ -4,6 +4,8 @@ import { AdminRepository } from "../../repositories/admins/AdminRepository";
 import { EmailCheckModule } from "../../middleware/@findEmailModule/searchEmail";
 import { ElderService } from "../elder/ElderService";
 import { ElderRepository } from "../../repositories/elder/ElderRepository";
+import { StoreService } from "../store/storeService";
+import { StoreRepository } from "../../repositories/store/storeRepository";
 
 class AdminService {
 
@@ -43,7 +45,12 @@ async executeCreate(data: Admin, creatorId: string){
        return null
     }
 
+    //VERIFICANDO SE A STORE EXISTE
+    if (!await new StoreService(new StoreRepository()).executeGet(data.storeId)) {
+      return null
+    }
 
+    
     const hashAdmin = {
         id: '',
         email: data.email,
