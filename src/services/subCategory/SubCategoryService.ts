@@ -87,6 +87,22 @@ class SubCategoryService {
   }
 
 
+  async executeGetByName(name: string){
+
+
+    //VALIDANDO O NAME
+        if (!await new SubCategoryCore().validationName(name)) {
+            return null
+        }
+
+    
+    //PROCURANDO SUBCATEGORY
+        const subcategory = this.SubCategoryRepository.getByName(name)
+        return subcategory
+
+  }
+
+
   async executeDelete(id: string, elderId: string){
 
 

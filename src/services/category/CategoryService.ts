@@ -1,6 +1,6 @@
 import { CategoryCore } from "../../core/category/CategoryCore";
 import { Category } from "../../interfaces/category/category";
-import { ICategoryRepository } from "../../interfaces/category/category.repository";
+import { CategoryRepository } from '../../repositories/category/CategoryRepository'
 import { ElderRepository } from "../../repositories/elder/ElderRepository";
 import { ElderService } from "../elder/ElderService";
 
@@ -8,7 +8,7 @@ import { ElderService } from "../elder/ElderService";
 class CategoryService {
 
     private CategoryRepository
-    constructor(CategoryRepository: ICategoryRepository){
+    constructor(CategoryRepository: CategoryRepository){
         this.CategoryRepository = CategoryRepository
     }
 

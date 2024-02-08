@@ -5,9 +5,10 @@ import { SubCategory } from "../../interfaces/subcategory/subCategory";
 
 
 const IdSchema = z.string().length(24);
+const NameSchema = z.string().min(3)
 
 const SubCategorySchema = z.object({
-    name: z.string().min(3), 
+    name: NameSchema,
     categoryId: IdSchema
 });
 
@@ -20,6 +21,10 @@ class SubCategoryCore {
 
   async validationData(data: SubCategory) {
     return await new ZodValidationData(SubCategorySchema, data).parse();
+  }
+
+  async validationName(name: string) {
+    return await new ZodValidationData(NameSchema, name).parse();
   }
 
 }

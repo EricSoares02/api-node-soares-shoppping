@@ -8,5 +8,7 @@ export interface ISubCategoryRepository{
 
     get(id: string): Promise<SubCategory | null>
 
+    getByName(name: string): Promise<SubCategory | null>
+
     delete(id: string): Promise<void>
 }
