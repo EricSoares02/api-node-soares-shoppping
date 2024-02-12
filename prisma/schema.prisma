@@ -22,7 +22,10 @@ photos String[]
 options Json
 store Store @relation(fields: [storeId], references: [id])
 storeId String @db.ObjectId
-category Json
+category Category @relation(fields: [categoryId], references: [id])
+categoryId String @db.ObjectId
+subCategory Subcategory @relation(fields: [subCategoryId], references: [id])
+subCategoryId String @db.ObjectId
 comments Comments[]
 }
 
@@ -30,6 +33,7 @@ model Category{
 id String @id @default(auto()) @map("_id") @db.ObjectId
 name String @unique
 subcategories Subcategory[]
+products Product[]
 }
 
 model Subcategory{
@@ -37,6 +41,7 @@ id String @id @default(auto()) @map("_id") @db.ObjectId
 name String 
 category Category @relation(fields: [categoryId], references: [id])
 categoryId String @db.ObjectId
+products Product[]
 }
 
 model Cart{
