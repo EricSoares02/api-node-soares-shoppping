@@ -7,6 +7,7 @@ import { AdminController } from "../controller/admins/AdminController";
 import { LoginController } from "../controller/login/loginController";
 import { SubCategoryController } from "../controller/subCategory/SubCategoryController";
 import { StoreController } from "../controller/store/StoreController";
+import { ProductController } from "../controller/product/ProductController";
 
 
 export const router = Router();
@@ -26,7 +27,7 @@ router.delete('/category', new CategoryController().delete);
 router.post('/subcategory', new SubCategoryController().create);
 router.patch('/subcategory', new SubCategoryController().update);
 router.get('/subcategory/:id', new SubCategoryController().get);
-router.get('/subcategory/name/:name', new SubCategoryController().getByName);
+router.get('/subcategory/name/:name', new SubCategoryController().checkByCategory);
 router.delete('/subcategory', new SubCategoryController().delete);
 
 
@@ -80,3 +81,11 @@ router.delete('/store', new StoreController().delete);
 
 
 
+
+//ROTAS PARA PRODUCTS
+router.post('/product', new ProductController().create);
+router.patch('/product', new ProductController().update);
+router.get('/product/:id', new ProductController().get);
+router.get('/product/category/:category', new ProductController().getByCategory);
+router.get('/product/params/:props', new ProductController().getByParams);
+router.delete('/product', new ProductController().delete);

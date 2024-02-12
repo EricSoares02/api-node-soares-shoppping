@@ -87,7 +87,7 @@ class SubCategoryService {
   }
 
 
-  async executeGetByName(name: string){
+  async executeCheckByCategory(name: string, categoryName: string){
 
 
     //VALIDANDO O NAME
@@ -95,9 +95,14 @@ class SubCategoryService {
             return null
         }
 
+    //VALIDANDO O NAME
+        if (!await new SubCategoryCore().validationName(categoryName)) {
+            return null
+        }
+
     
     //PROCURANDO SUBCATEGORY
-        const subcategory = this.SubCategoryRepository.getByName(name)
+        const subcategory = this.SubCategoryRepository.checkByCategory(name, categoryName)
         return subcategory
 
   }

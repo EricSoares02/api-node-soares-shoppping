@@ -63,11 +63,11 @@ class SubCategoryController {
   }
 
 
-  async getByName(req: Request, res: Response){
+  async checkByCategory(req: Request, res: Response){
 
 
     //BUSCANDO SUBCATEGORY
-        const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeGetByName(req.params.name);
+        const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(req.body.name, req.body.categoryName);
         if (!subcategory) {
             return new BadRequest('This SubCategory Not Exist!',res).returnError()
         }

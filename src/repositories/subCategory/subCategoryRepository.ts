@@ -46,12 +46,15 @@ class SubCategoryRepository implements ISubCategoryRepository {
         return createdSubCategory;
     }
 
-    async getByName(name: string): Promise<SubCategory | null> {
+    async checkByCategory(name: string, nameCategory:string): Promise<SubCategory | null> {
         connect();
         const createdSubCategory = await prisma.subcategory
             .findFirst({
                 where:{
-                name
+                    name: name,
+                category :{
+                    name: nameCategory
+                }
                 }
             })
         .finally(diconnect);
