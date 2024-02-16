@@ -9,6 +9,7 @@ import { SubCategoryController } from "../controller/subCategory/SubCategoryCont
 import { StoreController } from "../controller/store/StoreController";
 import { ProductController } from "../controller/product/ProductController";
 import { CartController } from "../controller/cart/CartController";
+import { CommentController } from "../controller/comment/CommentController";
 
 
 export const router = Router();
@@ -102,3 +103,17 @@ router.post('/cart', new CartController().create);
 router.patch('/cart', new CartController().update);
 router.get('/cart', new CartController().get);
 router.delete('/cart', new CartController().delete);
+
+
+
+
+
+
+
+//ROTAS PARA COMMENTS
+router.post('/comments', new CommentController().create);
+router.patch('/comments', new CommentController().update);
+router.get('/comments/:id', new CommentController().get);
+router.get('/comments/:id', new CommentController().getByProduct);
+router.get('/comments', new CommentController().getByUser);
+router.delete('/comments/:id', new CommentController().delete);
