@@ -8,6 +8,7 @@ import { LoginController } from "../controller/login/loginController";
 import { SubCategoryController } from "../controller/subCategory/SubCategoryController";
 import { StoreController } from "../controller/store/StoreController";
 import { ProductController } from "../controller/product/ProductController";
+import { CartController } from "../controller/cart/CartController";
 
 
 export const router = Router();
@@ -89,3 +90,15 @@ router.get('/product/:id', new ProductController().get);
 router.get('/product/category/:category', new ProductController().getByCategory);
 router.get('/product/params/:props', new ProductController().getByParams);
 router.delete('/product', new ProductController().delete);
+
+
+
+
+
+
+
+//ROTAS PARA CART
+router.post('/cart', new CartController().create);
+router.patch('/cart', new CartController().update);
+router.get('/cart', new CartController().get);
+router.delete('/cart', new CartController().delete);
