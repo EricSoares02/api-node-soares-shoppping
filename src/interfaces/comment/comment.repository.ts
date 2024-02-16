@@ -6,6 +6,8 @@ export interface ICommentRepository {
     create(data: Comment): Promise<Comment>;
 
     update(data: Comment): Promise<Comment>
+
+    get(id: string): Promise<Comment | null>
   
     getByUser(authorId: string): Promise<Comment[] | null>;
   

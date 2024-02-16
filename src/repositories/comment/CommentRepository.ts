@@ -36,6 +36,19 @@ class CommentRepository implements ICommentRepository{
 
 
 
+    async get(id: string): Promise<Comment | null> {
+        connect();
+        const comments = await prisma.comments.findFirst({
+            where: {
+                id
+            }
+        }).finally(diconnect);
+        return comments 
+    }
+
+
+
+
     async getByProduct(product_commentedId: string): Promise<Comment[] | null> {
         
         connect();
