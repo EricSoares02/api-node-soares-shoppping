@@ -88,6 +88,23 @@ class CommentController {
 
 
 
+
+
+  async get(req: Request, res: Response) {
+    
+    
+    //PROCURANDO COMMENT
+        const comments = await new CommentService(new CommentRepository()).executeGet(req.params.id);
+        if (!comments) {
+            return new BadRequest('Something Is Wrong!',res).returnError()
+        }
+        return new ResponseGet(comments).res(res)
+
+  }
+
+
+
+
   async getByUser(req: Request, res: Response) {
   
     
