@@ -2,12 +2,6 @@ import { JsonValue } from "@prisma/client/runtime/library";
 
 
 
-
-type ProductCategoryType = {
-    name: string,
-    subCategory: string
-}
-
 type ProductType = {
   id: string;
   name: string;
@@ -16,25 +10,52 @@ type ProductType = {
   options: any
   desc: string;
   storeId: string;
-  category: ProductCategoryType
+  categoryId: string 
+  subCategoryId: string
 };
 
+
+interface IProductParamsToCreate {
+  name: string;
+  photos: string[];
+  price: number;
+  options: any
+  desc: string;
+  storeId: string;
+  categoryName: string 
+  subCategoryName: string
+}
+
+interface IProductParamsToUpdate {
+  id: string;
+  name: string;
+  photos: string[];
+  price: number;
+  options: any
+  desc: string; 
+  categoryName: string 
+  subCategoryName: string
+}
+
+
 type ProductGetType = {
-    id: string;
-    name: string;
-    photos: string[];
-    price: number;
-    options: JsonValue;
-    desc: string;
-    storeId: string;
-    category: JsonValue
+  id: string;
+  name: string;
+  photos: string[];
+  price: number;
+  options: JsonValue
+  desc: string;
+  storeId: string;
+  categoryId: string 
+  subCategoryId: string
   };
 
 
 
 class Product implements ProductType {
 
-  category: ProductCategoryType;
+  categoryId: string;
+  subCategoryId: string;
   desc: string;
   id: string;
   name: string;
@@ -44,7 +65,8 @@ class Product implements ProductType {
   photos: string[];
 
   constructor(data: ProductType){
-    this.category = data.category
+    this.categoryId = data.categoryId
+    this.subCategoryId = data.subCategoryId
     this.desc = data.desc
     this.id = data.id
     this.name = data.name
@@ -61,4 +83,4 @@ class Product implements ProductType {
 
 
 
-export { Product, ProductGetType, ProductCategoryType }
+export { Product, ProductGetType, IProductParamsToCreate, IProductParamsToUpdate }

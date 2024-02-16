@@ -95,8 +95,11 @@ async getByParams(prop: string): Promise<ProductGetType[] | null> {
               name: { contains: prop },
             },
             {
-              category: { equals: prop },
+              category: { name: prop },
             },
+            {
+              subCategory: { name: prop}
+            }
           ],
         },
       })
@@ -115,7 +118,14 @@ async getByCategory(category: string): Promise<ProductGetType[] | null> {
       .findMany({
         where: {
           category: {
-             equals: category
+            OR: [
+              {
+                name: category
+              },
+              {
+                id: category
+              }
+            ]
           }
         },
       })
