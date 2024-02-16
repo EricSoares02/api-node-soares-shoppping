@@ -1,5 +1,5 @@
 import { ProductCore } from '../../core/product/ProductCore'
-import { Product } from '../../interfaces/product/product'
+import { IProductParamsToCreate, IProductParamsToUpdate } from '../../interfaces/product/product'
 import { AdminRepository } from '../../repositories/admins/AdminRepository'
 import { CategoryRepository } from '../../repositories/category/CategoryRepository'
 import { ProductRepository } from '../../repositories/procuct/ProductRepository'
@@ -16,11 +16,11 @@ class ProductService {
   }
 
 
-  async executeCreate(data: Product, creatorId: string){
+  async executeCreate(data: IProductParamsToCreate, creatorId: string){
 
 
     //VALIDANDO OS DADOS 
-        if (!await new ProductCore().validationData(data)) {
+        if (!await new ProductCore().validationDataToCreate(data)) {
             return null
         }
 
@@ -34,8 +34,8 @@ class ProductService {
 
 
     //VERIFICANDO A CATEGORIA E SUBCATEGORIA
-        const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.category.name)
-        const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.category.subCategory, data.category.name)
+        const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.categoryName)
+        const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.subCategoryName, data.categoryName)
         if (!category || !subCategory) {
             return null
      //VERIFICANDO SE A SUBCATEGORIA PERTENCE ÀQUELA CATEGORIA
@@ -47,14 +47,15 @@ class ProductService {
 
 
     //VERIFICANDO OPTIONS
-        if (!await new ProductCore().verifyOptions(data.options, data.category)) {
+        if (!await new ProductCore().verifyOptions(data.options, {category: category.name , subCategory: subCategory.name})) {
             return null
         }
         
 
         const product = {
-            id: data.id,
-            category: data.category,
+            id: '',
+            categoryId: category.id,
+            subCategoryId: subCategory.id,
             desc: data.desc,
             name: data.name,
             options: data.options,
@@ -67,11 +68,11 @@ class ProductService {
   }
 
 
-  async executeUpdate(data: Product, userId: string){
+  async executeUpdate(data: IProductParamsToUpdate, userId: string){
 
 
     //VALIDANDO OS DADOS 
-      if (!await new ProductCore().validationData(data)) {
+      if (!await new ProductCore().validationDataToUpdate(data)) {
           return null
       }
 
@@ -92,8 +93,8 @@ class ProductService {
 
 
     //VERIFICANDO A CATEGORIA E SUBCATEGORIA
-      const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.category.name)
-      const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.category.subCategory, data.category.name)
+      const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.categoryName)
+      const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.subCategoryName, data.categoryName)
       if (!category || !subCategory) {
           return null
     //VERIFICANDO SE A SUBCATEGORIA PERTENCE ÀQUELA CATEGORIA
@@ -104,7 +105,7 @@ class ProductService {
 
 
     //VERIFICANDO OPTIONS
-      if (!await new ProductCore().verifyOptions(data.options, data.category)) {
+      if (!await new ProductCore().verifyOptions(data.options, {category: category.name, subCategory: subCategory.name})) {
         return null
       }
   
@@ -112,7 +113,8 @@ class ProductService {
 
       const product = {
         id: data.id,
-        category: data.category,
+        categoryId: category.id,
+        subCategoryId: subCategory.id,
         desc: data.desc,
         name: data.name,
         options: data.options,
@@ -122,8 +124,8 @@ class ProductService {
       }
 
 
-  const update = await this.ProductRepository.update(product)
-  return update
+      const update = await this.ProductRepository.update(product)
+      return update
 
 
   }
@@ -211,7 +213,7 @@ class ProductService {
 
 
     //BUSCANDO O PRODUTO
-    const product = await this.ProductRepository.getByCategory(params)
+    const product = await this.ProductRepository.getByParams(params)
     return product
 
   }
