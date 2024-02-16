@@ -142,7 +142,7 @@ class CommentService {
 
 
 
-  async executeDelete(id: string){
+  async executeDelete(id: string, userId: string){
   
     //VALIDANDO ID
         if (!await new CommentCore().validationId(id)) {
@@ -151,13 +151,28 @@ class CommentService {
 
 
 
-    //VERIFICANDO SE O COMMENT EXISTE
-        if (!await this.executeGet(id)) {
+    //VALIDANDO ID
+        if (!await new CommentCore().validationId(userId)) {
             return null
         }
 
 
 
+    //VERIFICANDO SE O COMMENT EXISTE
+        const comment = await this.executeGet(id);
+        if (!comment) {
+            return null
+        }
+
+
+
+    //VERIFICANDO SE O USER É DONO DO COMMENT
+        if (userId !== comment.authorId) {
+            return null
+        }
+
+
+        
     //DELETANDO COMMENTs
         const comments = await this.CommentRepository.delete(id);
         return comments;
