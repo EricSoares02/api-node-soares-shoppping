@@ -19,7 +19,7 @@ class LikeRepository implements ILikeRepository {
     
     
     
-    async deliked(id: string): Promise<void> {
+    async disliked(id: string): Promise<void> {
 
         connect();
         const like = await prisma.likesComment.delete({
