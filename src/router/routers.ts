@@ -115,7 +115,7 @@ router.delete('/cart', new CartController().delete);
 router.post('/comments', new CommentController().create);
 router.patch('/comments', new CommentController().update);
 router.get('/comments/:id', new CommentController().get);
-router.get('/comments/:id', new CommentController().getByProduct);
+router.get('/comments/product/:id', new CommentController().getByProduct);
 router.get('/comments', new CommentController().getByUser);
 router.delete('/comments/:id', new CommentController().delete);
 
