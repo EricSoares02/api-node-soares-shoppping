@@ -7,6 +7,8 @@ export interface ILikeRepository {
 
     disliked(id: string): Promise<void>
 
+    get(id: string): Promise<Like | null>
+
     getByUser(authorId: string): Promise<Array<Like> | null>
 
 }

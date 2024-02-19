@@ -34,6 +34,19 @@ class LikeRepository implements ILikeRepository {
     }
 
 
+    async get(id: string): Promise<Like | null> {
+      
+        connect();
+        const like = await prisma.likesComment.findFirst({
+            where: {
+                id
+            }
+        }).finally(diconnect)
+
+        
+        return like
+
+    }
 
     async getByUser(authorId: string): Promise<Like[] | null> {
         
