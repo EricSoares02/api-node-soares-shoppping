@@ -90,7 +90,7 @@ class LikeService {
 
 
 
-    async executeDislike(id: string){
+    async executeDislike(id: string, authorId: string){
 
 
         //VALIDANDO O ID 
@@ -99,12 +99,19 @@ class LikeService {
             }
 
 
-        //VERIFICANDO SE O USER EXISTE
-            if (!this.executeGet(id)) {
+        //VERIFICANDO SE O COMMENT EXISTE
+            const comment = await this.executeGet(id)
+            if (!comment) {
                 return null
             }
 
 
+        //VERIFICANDO SE O USER É O MSM, SÓ ELE PODE APAGAR O SEU LIKE
+            if (comment.authorId !== authorId) {
+                return null
+            }
+
+            
         //BUSCANDO OS LIKES
             const likes = this.LikeRepository.disliked(id);
             return likes
