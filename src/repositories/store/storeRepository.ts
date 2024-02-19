@@ -8,9 +8,15 @@ class StoreRepository implements IStoreRepository {
   async create(data: Store): Promise<Store> {
 
         connect();
+        const { cnpj, desc, name, photo} = data
         const createStore = await prisma.store
         .create({
-            data,
+            data: {
+                cnpj,
+                desc,
+                name,
+                photo
+            }
         })
         .finally(diconnect);
 
@@ -19,11 +25,12 @@ class StoreRepository implements IStoreRepository {
   }
 
 
-  async update(data: Store): Promise<Store> {
+  async update(dataa: Store): Promise<Store> {
       
-        connect()
+        connect();
+        const { id: id, ...data} = dataa
         const updated = await prisma.store.update({
-            where: {id: data.id},
+            where: {id},
             data
         }).finally( diconnect )
     
