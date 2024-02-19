@@ -10,6 +10,7 @@ import { StoreController } from "../controller/store/StoreController";
 import { ProductController } from "../controller/product/ProductController";
 import { CartController } from "../controller/cart/CartController";
 import { CommentController } from "../controller/comment/CommentController";
+import { LikeController } from "../controller/like/LikeController";
 
 
 export const router = Router();
@@ -117,3 +118,15 @@ router.get('/comments/:id', new CommentController().get);
 router.get('/comments/:id', new CommentController().getByProduct);
 router.get('/comments', new CommentController().getByUser);
 router.delete('/comments/:id', new CommentController().delete);
+
+
+
+
+
+
+
+//ROTAS PARA LIKE
+router.post('/like', new LikeController().like);
+router.get('/like/:id', new LikeController().get);
+router.get('/like', new LikeController().getByUser);
+router.delete('/like/:id', new LikeController().dislike);
