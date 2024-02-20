@@ -31,7 +31,7 @@ class CategoryService {
             } 
 
         //CRIANDO CATEGORIA
-            const created = this.CategoryRepository.create(data);
+            const created = await this.CategoryRepository.create(data);
             return created
     }
 
@@ -56,7 +56,7 @@ class CategoryService {
 
 
         // ATUALIZANDO CATEGORIA
-            const update = this.CategoryRepository.update(data)
+            const update = await this.CategoryRepository.update(data)
             return update
     }
 
@@ -69,7 +69,7 @@ class CategoryService {
             }
 
         //BUSCANDO A CATEGORIA
-            const category = this.CategoryRepository.get(id)
+            const category = await this.CategoryRepository.get(id)
             return category
     }
 
@@ -82,7 +82,7 @@ class CategoryService {
             }
         
         //BUSCANDO A CATEGORIA
-            const category = this.CategoryRepository.getByName(name)
+            const category = await this.CategoryRepository.getByName(name)
             return category
     }
 

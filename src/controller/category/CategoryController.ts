@@ -51,7 +51,7 @@ class CategoryController {
     async get(req: Request, res: Response){
     
         //PROCURANDO CATEGORIA
-        const category = new CategoryService(new CategoryRepository).executeGet(req.params.id);
+        const category = await new CategoryService(new CategoryRepository).executeGet(req.params.id);
         if (!category) {
           return new BadRequest('Something Is Wrong!',res).returnError()
         }
@@ -63,7 +63,7 @@ class CategoryController {
     async getByName(req: Request, res: Response){
         
         //PROCURANDO CATEGORIA
-        const category = new CategoryService(new CategoryRepository).executeGetByName(req.params.name);
+        const category = await new CategoryService(new CategoryRepository).executeGetByName(req.params.name);
         if (!category) {
           return new BadRequest('Something Is Wrong!',res).returnError()
         }
