@@ -3,7 +3,6 @@ import { Category } from "../../interfaces/category/category";
 import { CategoryService } from "../../services/category/CategoryService";
 import { CategoryRepository } from "../../repositories/category/CategoryRepository";
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
 import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
@@ -16,15 +15,15 @@ class CategoryController {
           //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
           const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
           if(!id){
-              return new Unauthorized('Token Is Required!',res).returnError()
+                return new DefaultErrorResponseModule(401).returnResponse(res)
           }
 
           //CRIANDO A CATEGORIA
           const category = await new CategoryService(new CategoryRepository).executeCreate(req.body, id);
-          if (!category) {
-            return new InternalError("Internal Server Error", res).returnError()
+          if (!category.data) {
+            return new DefaultErrorResponseModule(category.status).returnResponse(res)
         }
-        return new ResponseToCreated(category).res(res);
+        return new ResponseToCreated(category.data).res(res);
 
     }
 
@@ -34,16 +33,16 @@ class CategoryController {
         //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
         if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
         //ATUALIZANDO CATEGORIA
         const category = await new CategoryService(new CategoryRepository).executeUpdate(req.body, id)
-        if (!category) {
-            return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!category.data) {
+            return new DefaultErrorResponseModule(category.status).returnResponse(res)
         }
-        return new ResponseToCreated(category).res(res)
+        return new ResponseToCreated(category.data).res(res)
 
     
     }
@@ -53,10 +52,10 @@ class CategoryController {
     
         //PROCURANDO CATEGORIA
         const category = await new CategoryService(new CategoryRepository).executeGet(req.params.id);
-        if (!category) {
-          return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!category.data) {
+            return new DefaultErrorResponseModule(category.status).returnResponse(res)
         }
-        return new ResponseGet(category).res(res)
+        return new ResponseGet(category.data).res(res)
 
     }
 
@@ -65,10 +64,10 @@ class CategoryController {
         
         //PROCURANDO CATEGORIA
         const category = await new CategoryService(new CategoryRepository).executeGetByName(req.params.name);
-        if (!category) {
-          return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!category.data) {
+            return new DefaultErrorResponseModule(category.status).returnResponse(res)
         }
-        return new ResponseGet(category).res(res)
+        return new ResponseGet(category.data).res(res)
     }
 
 
@@ -82,8 +81,8 @@ class CategoryController {
 
             
             const del = await new CategoryService(new CategoryRepository).executeDelete(req.params.id, id);
-            if (typeof del === "number") {
-                return new DefaultErrorResponseModule(del).returnResponse(res)
+            if (!del.data) {
+                return new DefaultErrorResponseModule(del.status).returnResponse(res)
             }
 
             return new NoContent().res(res)
