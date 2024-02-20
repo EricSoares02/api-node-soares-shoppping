@@ -79,9 +79,14 @@ class InvalidData extends BadRequest{
 }
 
 class DefaultErrorResponseModule {
-  constructor(private statusCode: number) {}
+  constructor(private statusCode?: number) {}
 
   returnResponse(res: Response, message?: string) {
+    
+    if (!this.statusCode) {
+      return new InternalError().returnError(res);
+    }
+
     switch (this.statusCode) {
       case 400:
         return new BadRequest().returnError(res);
