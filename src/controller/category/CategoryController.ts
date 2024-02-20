@@ -4,7 +4,8 @@ import { CategoryService } from "../../services/category/CategoryService";
 import { CategoryRepository } from "../../repositories/category/CategoryRepository";
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
 import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
-import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
 class CategoryController {
 
@@ -74,12 +75,18 @@ class CategoryController {
     async delete(req: Request, res: Response){
       
         //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
-        const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
-        if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
-        }
+            const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
+            if(!id){
+                return new DefaultErrorResponseModule(401).returnResponse(res)
+            }
 
-       await new CategoryService(new CategoryRepository).executeDelete(req.params.id, id);
+            
+            const del = await new CategoryService(new CategoryRepository).executeDelete(req.params.id, id);
+            if (typeof del === "number") {
+                return new DefaultErrorResponseModule(del).returnResponse(res)
+            }
+
+            return new NoContent().res(res)
     }
 
 

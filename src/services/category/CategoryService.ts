@@ -5,6 +5,7 @@ import { ElderRepository } from "../../repositories/elder/ElderRepository";
 import { ElderService } from "../elder/ElderService";
 
 
+
 class CategoryService {
 
     private CategoryRepository
@@ -87,25 +88,25 @@ class CategoryService {
     }
 
 
-    async executeDelete(categoryId: string, elderId: string){
+    async executeDelete(categoryId: string, elderId: string): Promise<number | Category> {
          
         //VERIFICANDO SE O ID É VALIDO
             if(!await new CategoryCore().validationId(elderId)){
-                return null
+                return 401
             }
 
         
 
         //VERIFICANDO SE QUEM ESTA TENTANDO FAZER A OPERAÇÃO É UM ELDER
             if (!await new ElderService(new ElderRepository()).executeGet(elderId)) {
-                return null
+                return 403
             }            
 
 
         //VERIFICANDO SE A CATEGORIA EXISTE
             const category = await this.executeGet(categoryId);
             if (!category) {
-                return category
+                return 404
             }
         
         //DELETANDO A CATEGORIA

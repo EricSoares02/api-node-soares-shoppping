@@ -51,13 +51,12 @@ class CategoryRepository implements ICategoryRepository{
         return category   
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(id: string): Promise<Category> {
         connect();
         const category = await prisma.category.delete({
             where: {id}
         }).finally(diconnect);
-        console.log(category)
-        return 
+        return category
     }
 }
 
