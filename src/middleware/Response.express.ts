@@ -28,4 +28,14 @@ class ResponseGet extends ResponseExpress{
         return res.status(200).json({message:'successful',data: this.T})  
     }
 }
-export {ResponseExpress, ResponseToCreated, ResponseGet}
+
+
+
+class NoContent {
+
+
+    public res(res: Response<any, Record<string, any>>) {
+        return res.status(204).json({message: 'successful'})
+    }
+}
+export {ResponseExpress, ResponseToCreated, ResponseGet, NoContent}
