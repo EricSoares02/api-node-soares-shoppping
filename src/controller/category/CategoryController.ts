@@ -79,7 +79,7 @@ class CategoryController {
             return new Unauthorized('Token Is Required!',res).returnError()
         }
 
-       await new CategoryService(new CategoryRepository).executeDelete(id);
+       await new CategoryService(new CategoryRepository).executeDelete(req.params.id, id);
     }
 
 

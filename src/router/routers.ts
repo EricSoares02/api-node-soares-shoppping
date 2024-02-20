@@ -21,7 +21,7 @@ router.post('/category', new CategoryController().create);
 router.patch('/category', new CategoryController().update);
 router.get('/category/:id', new CategoryController().get);
 router.get('/category/name/:name', new CategoryController().getByName);
-router.delete('/category', new CategoryController().delete);
+router.delete('/category/:id', new CategoryController().delete);
 
 
 
@@ -49,7 +49,7 @@ router.delete('/elder', new ElderController().delete);
 //ROTAS PARA USER
 router.post('/user', new UserController().create);
 router.patch('/user', new UserController().update);
-router.get('/user/:id', new UserController().get);
+router.get('/user', new UserController().get);
 router.get('/user/email/:email', new UserController().getByEmail);
 router.delete('/user', new UserController().delete);
 

@@ -87,21 +87,29 @@ class CategoryService {
     }
 
 
-    async executeDelete(id: string){
+    async executeDelete(categoryId: string, elderId: string){
          
         //VERIFICANDO SE O ID É VALIDO
-            if(!await new CategoryCore().validationId(id)){
+            if(!await new CategoryCore().validationId(elderId)){
                 return null
             }
 
+        
+
+        //VERIFICANDO SE QUEM ESTA TENTANDO FAZER A OPERAÇÃO É UM ELDER
+            if (!await new ElderService(new ElderRepository()).executeGet(elderId)) {
+                return null
+            }            
+
+
         //VERIFICANDO SE A CATEGORIA EXISTE
-            const category = await this.executeGet(id);
+            const category = await this.executeGet(categoryId);
             if (!category) {
                 return category
             }
         
         //DELETANDO A CATEGORIA
-            const deleted = this.CategoryRepository.delete(id)
+            const deleted = this.CategoryRepository.delete(categoryId)
             return deleted
     }
 
