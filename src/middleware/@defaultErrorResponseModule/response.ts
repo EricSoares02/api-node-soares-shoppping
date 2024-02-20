@@ -68,6 +68,16 @@ class Forbidden extends ResquestErrors {
   }
 }
 
+class InvalidData extends BadRequest{
+
+  returnError(res: Response, message?: string): void {
+    this.message = message ?? "Invalid Data, Something Is Wrong!";
+    res.status(this.statusCode).json({
+      message: this.message,
+    });
+  }
+}
+
 class DefaultErrorResponseModule {
   constructor(private statusCode: number) {}
 
@@ -87,6 +97,9 @@ class DefaultErrorResponseModule {
 
       case 500:
         return new InternalError().returnError(res);
+
+      case 1001:
+        return new InvalidData().returnError(res)
 
       default:
         return new BadRequest().returnError(res, message)
