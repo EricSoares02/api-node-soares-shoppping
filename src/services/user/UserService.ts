@@ -1,6 +1,7 @@
 import { UserCore } from "../../core/user/UserCore";
 import { User } from "../../interfaces/user/user";
 import { EmailCheckModule } from "../../middleware/@findEmailModule/searchEmail";
+import { DefaultServicesResponse } from "../../middleware/response.services";
 import { UserRepository } from "../../repositories/user/UserRepository";
 
 class UserService {
@@ -9,16 +10,22 @@ class UserService {
     this.UserRepository = UserRepository;
   }
 
-  async executeCreate(data: User) {
+  async executeCreate(data: User): Promise<DefaultServicesResponse<Partial<User>>>{
 
     //VALIDADO OS DADOS
     if (!await new UserCore().validationData(data)) {
-      return null;
+      return {
+        status: 1001,
+        data: null
+      };
     }
 
     //VERIFICANDO SE O EMAIL EXISTE NO DATABASE
     if (await new EmailCheckModule(data.email).find()) {
-      return null;
+      return {
+        status: 400,
+        data: null
+      };
     }
 
     //CRIANDO UM NOVO USER E ENCRIPTANDO A SENHA
@@ -32,88 +39,129 @@ class UserService {
     }
 
     //CRIANDO O USER E RETORNANDO
-    const created = this.UserRepository.create(user);
-    return created;
+    const created = await this.UserRepository.create(user);
+    return {
+      data: created
+    };
   }
 
 
-  async executeUpdate(data: User, id: string) {
+  async executeUpdate(data: User): Promise<DefaultServicesResponse<Partial<User>>>{
 
     //VALIDADO OS DADOS 
     if (!await new UserCore().validationData(data)) {
-        return null
+        return {
+          status: 1001,
+          data: null
+        }
     }
 
     //VERIFICANDO SE A CONTA EXISTE
-    const userExist = await this.executeGet(id);
-    if(!userExist){
-        return null
+    const userExist = await this.executeGet(data.id);
+    if(!userExist.data){
+        return {
+          status: 404,
+          data: null
+        }
     }
 
 
     //SE O USUÁRIO QUISER TROCAR O EMAIL
-    if (data.email !== userExist.email) {
+    if (data.email !== userExist.data.email) {
     //VERIFICANDO SE O NOVO EMAIL EXISTE NO DATABASE
         if (await new EmailCheckModule(data.email).find()) {
-            return null
+            return {
+              status: 400,
+              data: null
+            }
         }
     }
     
     const updated = await this.UserRepository.update(data);
-    return updated
+    return {
+      data: updated
+    }
 
   }
 
 
-  async executeGet(id: string) {
+  async executeGet(id: string): Promise<DefaultServicesResponse<Partial<User>>>{
 
     //VERIFICANDO SE O ID É VÁLIDO
     if (!await new UserCore().validationId(id)) {
-      return null;
+      return {
+        status: 1001,
+        data: null
+      };
     }
 
     // PROCURANDO USER E RETORNANDO
-    const user = this.UserRepository.get(id);
-    return user;
+    const user = await this.UserRepository.get(id);
+    return {
+      data: user
+    };
   }
 
 
-  async executeGetByEmail(email: string) {
+  async executeGetByEmail(email: string): Promise<DefaultServicesResponse<Partial<User>>>{
 
     //VERIFICANDO SE O EMAIL É VÁLIDO
     if (!await new UserCore().validationEmail(email)) {
-      return null;
+      return {
+        status: 1001,
+        data: null
+      };
     }
 
     // PROCURANDO USER E RETORNANDO
     const user = await this.UserRepository.getByEmail(email);
-    return user;
+    return {
+      data: user
+    };
   }
 
 
-  async executeDelete(id: string) {
+  async executeDelete(id: string): Promise<DefaultServicesResponse<void>>{
 
         //VERIFICANDO SE O ID É VÁLIDO
         if (!await new UserCore().validationId(id)) {
-            return null;
+            return {
+              status: 1001,
+              data: null
+            };
         }
 
         //VERIFICANDO SE O USER EXISTE, SE SIM, PODEMOS DELETAR
-        if (await this.executeGet(id)) {
-            await this.UserRepository.delete(id);
+        const user = await this.executeGet(id)
+        if (!user.data) {
+          return {
+            status: 404,
+            data: null
+          }
         }
-  }
 
-  async executeLogin(email: string) {
+        const remove = await this.UserRepository.delete(id);
+        return {
+          data: remove
+        }
+
+      }
+
+  async executeLogin(email: string): Promise<DefaultServicesResponse<Partial<User>>>{
 
     //VERIFICANDO SE O EMAIL É VÁLIDO
     if (!await new UserCore().validationEmail(email)) {
-      return null;
+      return {
+        status: 1001,
+        data: null
+      };
     }
 
     // FAZENDO LOGIN
     const login = await this.UserRepository.login(email);
-    return login;
+    return {
+      data: login
+    };
   }
 }
 

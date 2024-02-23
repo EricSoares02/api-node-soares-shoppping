@@ -5,11 +5,12 @@ import { UserRepository } from "../../repositories/user/UserRepository";
 import { ElderService } from "../../services/elder/ElderService";
 import { ElderRepository } from "../../repositories/elder/ElderRepository";
 import { User } from "../../interfaces/user/user";
+import { DefaultServicesResponse } from "../response.services";
 
 
 class EmailCheckModule {
   private email;
-  private findEmail: Partial<User> | null = null
+  private findEmail: DefaultServicesResponse<Partial<User>> | null = null
   constructor(email: string) {
     this.email = email;
   }
@@ -23,13 +24,13 @@ class EmailCheckModule {
     );
     
       
-    if(!this.findEmail){
+    if(!this.findEmail.data){
       this.findEmail = await new ElderService(new ElderRepository()).executeGetByEmail(
         this.email
       );
     }
 
-      if (!this.findEmail) {
+      if (!this.findEmail.data) {
         return false
       } else {
         return true
