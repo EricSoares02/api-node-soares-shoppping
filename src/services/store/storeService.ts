@@ -79,11 +79,11 @@ class StoreService {
         let user; 
         user = await new ElderService(new ElderRepository()).executeGet(id) 
     //SE NÃO ACHARMOS EM ELDER, PROCURAMOS EM ADMIN
-        if (!user) {
+        if (!user.data) {
            user = await new AdminService(new AdminRepository()).executeGet(id)
     //SE ACHARMOS EM ADMIN, VERIFICAMOS
         //SE ELE NÃO FOR UM MASTER OU SE NÃO FOR DA MESMA LOJA, RETORNAMOS NULL
-           if (user?.role !== 'master' || user.storeId !== store.data.id) {
+           if (user.data && user?.data.role !== 'master' || user.data && user.data.storeId !== store.data.id) {
               return {
                 status: 403,
                 data: null
