@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
 import { SubCategory } from "../../interfaces/subcategory/subCategory";
 import { SubCategoryService } from "../../services/subCategory/SubCategoryService";
 import { SubCategoryRepository } from "../../repositories/subCategory/subCategoryRepository";
-import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
 class SubCategoryController {
 
@@ -14,16 +14,16 @@ class SubCategoryController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //CRIANDO SUBCATEGORY
         const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeCreate(req.body, id);
-        if (!subcategory) {
-            return new InternalError("Internal Server Error", res).returnError()
+        if (!subcategory.data) {
+            return new DefaultErrorResponseModule(subcategory.status).returnResponse(res)
         }
-        return new ResponseToCreated(subcategory).res(res);
+        return new ResponseToCreated(subcategory.data).res(res);
 
   }
 
@@ -34,16 +34,16 @@ class SubCategoryController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //ATUALIZANDO SUBCATEGORY
         const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeUpdate(req.body, id);
-        if (!subcategory) {
-            return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!subcategory.data) {
+            return new DefaultErrorResponseModule(subcategory.status).returnResponse(res)
         }
-        return new ResponseToCreated(subcategory).res(res);
+        return new ResponseToCreated(subcategory.data).res(res);
     
 
   }
@@ -54,10 +54,10 @@ class SubCategoryController {
 
     //BUSCANDO SUBCATEGORY
         const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeGet(req.params.id);
-        if (!subcategory) {
-            return new BadRequest('This SubCategory Not Exist!',res).returnError()
+        if (!subcategory.data) {
+            return new DefaultErrorResponseModule(subcategory.status).returnResponse(res)
         }
-        return new ResponseGet(subcategory).res(res);
+        return new ResponseGet(subcategory.data).res(res);
  
 
   }
@@ -68,10 +68,10 @@ class SubCategoryController {
 
     //BUSCANDO SUBCATEGORY
         const subcategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(req.body.name, req.body.categoryName);
-        if (!subcategory) {
-            return new BadRequest('This SubCategory Not Exist!',res).returnError()
+        if (!subcategory.data) {
+            return new DefaultErrorResponseModule(subcategory.status).returnResponse(res)
         }
-        return new ResponseGet(subcategory).res(res);
+        return new ResponseGet(subcategory.data).res(res);
  
 
   }
@@ -82,14 +82,18 @@ class SubCategoryController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //DELETANDO SUBCATEGORY
-        await new SubCategoryService(new SubCategoryRepository()).executeDelete(req.body.id, id);
+       const del = await new SubCategoryService(new SubCategoryRepository()).executeDelete(req.body.id, id);
        
+        if (!del.data) {
+            return new DefaultErrorResponseModule(del.status).returnResponse(res)
+            }
     
+            return new NoContent().res(res)
 
   }
 }

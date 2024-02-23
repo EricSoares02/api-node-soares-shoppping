@@ -1,5 +1,6 @@
 import { SubCategoryCore } from "../../core/subCategory/SubCategoryCore";
 import { SubCategory } from "../../interfaces/subcategory/subCategory";
+import { DefaultServicesResponse } from "../../middleware/response.services";
 import { CategoryRepository } from "../../repositories/category/CategoryRepository";
 import { ElderRepository } from "../../repositories/elder/ElderRepository";
 import { SubCategoryRepository } from "../../repositories/subCategory/subCategoryRepository";
@@ -15,123 +16,185 @@ class SubCategoryService {
   }
 
 
-  async executeCreate(data: SubCategory, id: string){
+  async executeCreate(data: SubCategory, id: string): Promise<DefaultServicesResponse<SubCategory>>{
 
     
     //VALIDADO OS DADOS
         if (!await new SubCategoryCore().validationData(data)) {
-        return null;
+        return {
+            status: 1001,
+            data: null
+        };
         }
 
 
     //VERIFICANDO SE QUEM ESTÁ TENTANDO FAZER A CHAMADA É UM ELDER
-        if (!await new ElderService(new ElderRepository()).executeGet(id)) {
-            return null
+        const elder = await new ElderService(new ElderRepository()).executeGet(id)
+        if (!elder.data) {
+            return {
+                status: 403,
+                data: null
+            }
         }
 
     
     //VERIFICANDO SE A CATEGORIA EXISTE
-        if (!await new CategoryService(new CategoryRepository()).executeGet(data.categoryId)) {
-            return null
+        const category = await new CategoryService(new CategoryRepository()).executeGet(data.categoryId) 
+        if (!category.data) {
+            return {
+                status: 400,
+                data: null
+            }
         }
 
 
     //CRIANDO A SUBCATEGORY
-        const created = this.SubCategoryRepository.create(data)
-        return created
+        const created = await this.SubCategoryRepository.create(data)
+        return {
+            data: created
+        }
 
   }
 
 
-  async executeUpdate(data: SubCategory, id: string){
+  async executeUpdate(data: SubCategory, id: string): Promise<DefaultServicesResponse<SubCategory>>{
 
         
     //VALIDADO OS DADOS
         if (!await new SubCategoryCore().validationData(data)) {
-            return null;
+            return {
+                status: 1001,
+                data: null
+            };
         }
 
 
     //VERIFICANDO SE QUEM ESTÁ TENTANDO FAZER A CHAMADA É UM ELDER
-        if (!await new ElderService(new ElderRepository()).executeGet(id)) {
-            return null
+        const elder = await new ElderService(new ElderRepository()).executeGet(id)
+        if (!elder.data) {
+            return {
+                status: 403,
+                data: null
+            }
         }    
 
 
     //VERIFICANDO SE A CATEGORIA EXISTE
-        if (!await new CategoryService(new CategoryRepository()).executeGet(data.categoryId)) {
-            return null
+        const category = await new CategoryService(new CategoryRepository()).executeGet(data.categoryId)
+        if (!category.data) {
+            return {
+                status: 400,
+                data: null
+            }
         }   
 
+
+
+    //VERIFICANDO SE A SUBCATEGORY EXISTE
+        const verifySubCategory = await this.executeGet(data.id)
+        if (!verifySubCategory.data) {
+            return {
+                status: 404,
+                data: null
+            }
+        }
     
     //ATUALIZANDO  A SUBCATEGORIA
-        const updated = this.SubCategoryRepository.create(data)
-        return updated
+        const updated = await this.SubCategoryRepository.create(data)
+        return {
+            data: updated
+        }
 
   }
 
 
-  async executeGet(id: string){
+  async executeGet(id: string): Promise<DefaultServicesResponse<SubCategory>>{
 
 
     //VALIDANDO O ID
         if (!await new SubCategoryCore().validationId(id)) {
-            return null
+            return {
+                status: 1001,
+                data: null
+            }
         }
 
     
     //PROCURANDO SUBCATEGORY
-        const subcategory = this.SubCategoryRepository.get(id)
-        return subcategory
+        const subcategory = await this.SubCategoryRepository.get(id)
+        return {
+            data: subcategory
+        }
 
   }
 
 
-  async executeCheckByCategory(name: string, categoryName: string){
+  async executeCheckByCategory(name: string, categoryName: string): Promise<DefaultServicesResponse<SubCategory>>{
 
 
     //VALIDANDO O NAME
         if (!await new SubCategoryCore().validationName(name)) {
-            return null
+            return {
+                status: 1001,
+                data: null
+            }
         }
 
     //VALIDANDO O NAME
         if (!await new SubCategoryCore().validationName(categoryName)) {
-            return null
+            return {
+                status: 1001,
+                data: null
+            }
         }
 
     
     //PROCURANDO SUBCATEGORY
-        const subcategory = this.SubCategoryRepository.checkByCategory(name, categoryName)
-        return subcategory
+        const subcategory = await this.SubCategoryRepository.checkByCategory(name, categoryName)
+        return {
+            data: subcategory
+        }
 
   }
 
 
-  async executeDelete(id: string, elderId: string){
+  async executeDelete(id: string, elderId: string): Promise<DefaultServicesResponse<void>>{
 
 
     //VALIDANDO O ID
         if (!await new SubCategoryCore().validationId(id)) {
-            return null
+            return {
+                status: 1001,
+                data: null
+            }
         }
 
 
     //VERIFICANDO SE QUEM ESTÁ TENTANDO FAZER A CHAMADA É UM ELDER
-        if (!await new ElderService(new ElderRepository()).executeGet(elderId)) {
-            return null
+        const elder = await new ElderService(new ElderRepository()).executeGet(elderId)
+        if (!elder.data) {
+            return {
+                status: 403,
+                data: null
+            }
         }    
         
     
     //VERIFICANDO SE A SUBCATEGORY EXISTE
-        if (!await this.executeGet(id)) {
-            return null
+        const subCategory = await this.executeGet(id)
+        if (!subCategory.data) {
+            return {
+                status: 404,
+                data: null
+            }
         }
 
     
     //DELETENDO A SUBCATEGORY
-        const subcategory = this.SubCategoryRepository.delete(id)
-        return subcategory
+        const remove = await this.SubCategoryRepository.delete(id)
+        return {
+            data: remove
+        }
 
   }
 
