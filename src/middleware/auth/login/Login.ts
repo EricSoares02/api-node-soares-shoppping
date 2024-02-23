@@ -52,17 +52,17 @@ class LoginMiddleware{
 
         const user = await this.searchUser();
         
-        if(!user){
-            return user 
+        if(!user?.data){
+            return user?.data 
         }
 
-        const passwordIsEqual = await new BcryptMiddlewareMod(this.password).comparePassword(user.password ?? '')
+        const passwordIsEqual = await new BcryptMiddlewareMod(this.password).comparePassword(user.data.password ?? '')
         
         if (!passwordIsEqual) {
             return null
         }
 
-       const token = new JwtMiddleware('').GenereteToken(user.id ?? '');
+       const token = new JwtMiddleware('').GenereteToken(user.data.id ?? '');
 
        return token
 
