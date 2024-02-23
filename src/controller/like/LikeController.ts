@@ -1,10 +1,11 @@
 import { Request, Response } from "express"
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
-import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+
+import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 import { LikeRepository } from "../../repositories/like/LikeRepository";
 import { LikeService } from "../../services/like/LikeService";
 import { Like } from "../../interfaces/like/like";
+import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
 
 
@@ -17,7 +18,7 @@ class LikeController {
         //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
             const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
             if(!id){
-                return new Unauthorized('Token Is Required!',res).returnError()
+                return new DefaultErrorResponseModule(401).returnResponse(res)
             }
 
            
@@ -30,10 +31,10 @@ class LikeController {
 
         //CURTINDO 
             const like = await new LikeService(new LikeRepository()).executeLike(data)
-            if (!like) {
-                return new InternalError("Internal Server Error", res).returnError()
+            if (!like.data) {
+                return new DefaultErrorResponseModule(like.status).returnResponse(res)
             }
-            return new ResponseToCreated(like).res(res);
+            return new ResponseToCreated(like.data).res(res);
 
             
     }
@@ -46,7 +47,7 @@ class LikeController {
         //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
             const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
             if(!id){
-                return new Unauthorized('Token Is Required!',res).returnError()
+                return new DefaultErrorResponseModule(401).returnResponse(res)
             }
 
            
@@ -54,10 +55,10 @@ class LikeController {
 
         //BUSCANDO LIKES
             const likes = await new LikeService(new LikeRepository()).executeGetByUser(id)
-            if (!likes) {
-                return new BadRequest("Something Is Wrong!", res).returnError()
+            if (!likes.data) {
+                return new DefaultErrorResponseModule(likes.status).returnResponse(res)
             }
-            return new ResponseGet(likes).res(res);
+            return new ResponseGet(likes.data).res(res);
 
             
     }
@@ -70,10 +71,10 @@ class LikeController {
 
         //BUSCANDO LIKE
             const like = await new LikeService(new LikeRepository()).executeGet(req.params.id)
-            if (!like) {
-                return new BadRequest("Something Is Wrong!", res).returnError()
+            if (!like.data) {
+                return new DefaultErrorResponseModule(like.status).returnResponse(res)
             }
-            return new ResponseGet(like).res(res);
+            return new ResponseGet(like.data).res(res);
 
             
     }
@@ -87,15 +88,19 @@ class LikeController {
         //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
             const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
             if(!id){
-                return new Unauthorized('Token Is Required!',res).returnError()
+                return new DefaultErrorResponseModule(401).returnResponse(res)
             }
 
            
 
         //DESCURTINDO
-            await new LikeService(new LikeRepository()).executeDislike(req.params.id, id)
+           const del = await new LikeService(new LikeRepository()).executeDislike(req.params.id, id)
            
+           if (!del.data) {
+            return new DefaultErrorResponseModule(del.status).returnResponse(res)
+            }
 
+            return new NoContent().res(res)
             
     }
 

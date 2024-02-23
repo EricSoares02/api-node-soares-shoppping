@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
 import { ProductService } from "../../services/product/ProductService";
 import { ProductRepository } from "../../repositories/procuct/ProductRepository";
-import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
 class ProductController {
 
@@ -13,16 +13,16 @@ class ProductController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //CRIANDO PRODUCT
         const product = await new ProductService(new ProductRepository()).executeCreate(req.body, id);
-        if (!product) {
-            return new InternalError("Internal Server Error", res).returnError()
+        if (!product.data) {
+            return new DefaultErrorResponseModule(product.status).returnResponse(res)
         }
-        return new ResponseToCreated(product).res(res);
+        return new ResponseToCreated(product.data).res(res);
 
 
   }
@@ -34,16 +34,16 @@ class ProductController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //ATUALIZANDO PRODUCT
         const product = await new ProductService(new ProductRepository()).executeUpdate(req.body, id);
-        if (!product) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
+        if (!product.data) {
+            return new DefaultErrorResponseModule(product.status).returnResponse(res)
         }
-        return new ResponseToCreated(product).res(res);
+        return new ResponseToCreated(product.data).res(res);
 
 
   }
@@ -55,16 +55,17 @@ class ProductController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? "").GetIdByToken();
         if (!id) {
-            return new Unauthorized("Token Is Required!", res).returnError();
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
     //DELETANDO PRODUCT
-        const product = await new ProductService(new ProductRepository()).executeDelete(req.body, id);
-        if (!product) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
-        }
-        return new ResponseToCreated(product).res(res);
+        const del = await new ProductService(new ProductRepository()).executeDelete(req.body, id);
+        if (!del.data) {
+            return new DefaultErrorResponseModule(del.status).returnResponse(res)
+            }
+    
+            return new NoContent().res(res)
 
 
   }
@@ -75,10 +76,10 @@ class ProductController {
 
     //BUSCANDO PRODUCT
         const product = await new ProductService(new ProductRepository()).executeGetByParams(req.params.props);
-        if (!product) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
+        if (!product.data) {
+            return new DefaultErrorResponseModule(product.status).returnResponse(res)
         }
-        return new ResponseGet(product).res(res);
+        return new ResponseGet(product.data).res(res);
 
 
   }
@@ -89,10 +90,10 @@ class ProductController {
 
     //BUSCANDO PRODUCT
         const product = await new ProductService(new ProductRepository()).executeGetByCategory(req.params.category);
-        if (!product) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
+        if (!product.data) {
+            return new DefaultErrorResponseModule(product.status).returnResponse(res)
         }
-        return new ResponseGet(product).res(res);
+        return new ResponseGet(product.data).res(res);
 
 
   }
@@ -103,10 +104,10 @@ class ProductController {
 
     //BUSCANDO PRODUCT
         const product = await new ProductService(new ProductRepository()).executeGet(req.params.id);
-        if (!product) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
+        if (!product.data) {
+            return new DefaultErrorResponseModule(product.status).returnResponse(res)
         }
-        return new ResponseGet(product).res(res);
+        return new ResponseGet(product.data).res(res);
 
 
   }

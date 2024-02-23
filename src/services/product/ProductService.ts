@@ -1,5 +1,6 @@
 import { ProductCore } from '../../core/product/ProductCore'
-import { IProductParamsToCreate, IProductParamsToUpdate } from '../../interfaces/product/product'
+import { IProductParamsToCreate, IProductParamsToUpdate, Product } from '../../interfaces/product/product'
+import { DefaultServicesResponse } from '../../middleware/response.services'
 import { AdminRepository } from '../../repositories/admins/AdminRepository'
 import { CategoryRepository } from '../../repositories/category/CategoryRepository'
 import { ProductRepository } from '../../repositories/procuct/ProductRepository'
@@ -16,19 +17,25 @@ class ProductService {
   }
 
 
-  async executeCreate(data: IProductParamsToCreate, creatorId: string){
+  async executeCreate(data: IProductParamsToCreate, creatorId: string): Promise<DefaultServicesResponse<Product>>{
 
 
     //VALIDANDO OS DADOS 
         if (!await new ProductCore().validationDataToCreate(data)) {
-            return null
+            return {
+              status: 1001,
+              data: null
+            }
         }
 
 
     //VERICANDO SE QUEM ESTA CHAMANDO O END POINT É UM ADMIN OU MASTER
         const admin = await new AdminService(new AdminRepository()).executeGet(creatorId);
-        if (!admin) {
-            return null
+        if (!admin.data) {
+            return {
+              status: 403,
+              data: null
+            }
         }
 
 
@@ -36,164 +43,216 @@ class ProductService {
     //VERIFICANDO A CATEGORIA E SUBCATEGORIA
         const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.categoryName)
         const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.subCategoryName, data.categoryName)
-        if (!category || !subCategory) {
-            return null
+        if (!category.data || !subCategory.data) {
+            return {
+              status: 400,
+              data: null
+            }
      //VERIFICANDO SE A SUBCATEGORIA PERTENCE ÀQUELA CATEGORIA
-        } else if (subCategory.categoryId !== category.id) {
-            return null
+        } else if (subCategory.data.categoryId !== category.data.id) {
+            return {
+              status: 400,
+              data: null
+            }
         }
 
 
 
 
     //VERIFICANDO OPTIONS
-        if (!await new ProductCore().verifyOptions(data.options, {category: category.name , subCategory: subCategory.name})) {
-            return null
+        if (!await new ProductCore().verifyOptions(data.options, {category: category.data.name , subCategory: subCategory.data.name})) {
+            return {
+              status: 1001,
+              data: null
+            }
         }
         
 
         const product = {
             id: '',
-            categoryId: category.id,
-            subCategoryId: subCategory.id,
+            categoryId: category.data.id,
+            subCategoryId: subCategory.data.id,
             desc: data.desc,
             name: data.name,
             options: data.options,
             photos: data.photos,
             price: data.price,
-            storeId: admin.storeId ?? ''
+            storeId: admin.data.storeId ?? ''
         }
         const create = await this.ProductRepository.create(product)
-        return create
+        return {
+          data: create
+        }
   }
 
 
-  async executeUpdate(data: IProductParamsToUpdate, userId: string){
+  async executeUpdate(data: IProductParamsToUpdate, userId: string): Promise<DefaultServicesResponse<Product>>{
 
 
     //VALIDANDO OS DADOS 
       if (!await new ProductCore().validationDataToUpdate(data)) {
-          return null
+          return {
+            status: 1001,
+            data: null
+          }
       }
 
 
     //VERIFICANDO SE O PRODUTO EXISTE 
       const verifyProduct = await this.executeGet(data.id);
-      if (!verifyProduct) {
-        return null
+      if (!verifyProduct.data) {
+        return {
+          status: 404,
+          data: null
+        }
       }
 
 
 
     //VERICANDO SE QUEM ESTA CHAMANDO O END POINT É UM ADMIN OU MASTER DA MSM LOJA QUE O PRODUTO
       const admin = await new AdminService(new AdminRepository()).executeGet(userId);
-      if (!admin || admin.storeId !== verifyProduct.storeId) {
-          return null
+      if (!admin.data || admin.data.storeId !== verifyProduct.data.storeId) {
+          return {
+            status: 403,
+            data: null
+          }
       }
 
 
     //VERIFICANDO A CATEGORIA E SUBCATEGORIA
       const category = await new CategoryService(new CategoryRepository()).executeGetByName(data.categoryName)
       const subCategory = await new SubCategoryService(new SubCategoryRepository()).executeCheckByCategory(data.subCategoryName, data.categoryName)
-      if (!category || !subCategory) {
-          return null
+      if (!category.data || !subCategory.data) {
+          return {
+            status: 400,
+            data: null
+          }
     //VERIFICANDO SE A SUBCATEGORIA PERTENCE ÀQUELA CATEGORIA
-      } else if (subCategory.categoryId !== category.id) {
-          return null
+      } else if (subCategory.data.categoryId !== category.data.id) {
+          return {
+            status: 400,
+            data: null
+          }
       }
 
 
 
     //VERIFICANDO OPTIONS
-      if (!await new ProductCore().verifyOptions(data.options, {category: category.name, subCategory: subCategory.name})) {
-        return null
+      if (!await new ProductCore().verifyOptions(data.options, {category: category.data.name, subCategory: subCategory.data.name})) {
+        return {
+          status: 1001,
+          data: null
+        }
       }
   
 
 
       const product = {
         id: data.id,
-        categoryId: category.id,
-        subCategoryId: subCategory.id,
+        categoryId: category.data.id,
+        subCategoryId: subCategory.data.id,
         desc: data.desc,
         name: data.name,
         options: data.options,
         photos: data.photos,
         price: data.price,
-        storeId: verifyProduct.storeId ?? ''
+        storeId: verifyProduct.data.storeId ?? ''
       }
 
 
       const update = await this.ProductRepository.update(product)
-      return update
+      return {
+        data: update
+      }
 
 
   }
 
 
-  async executeDelete(id: string, userId: string){
+  async executeDelete(id: string, userId: string): Promise<DefaultServicesResponse<void>>{
 
    
     //VALIDANDO ID
       if (!await new ProductCore().validationId(id)) {
-          return null
+          return {
+            status: 1001,
+            data: null
+          }
       }
 
 
     //VERIFICANDO SE O PRODUTO EXISTE 
       const verifyProduct = await this.executeGet(id);
-      if (!verifyProduct) {
-          return null
+      if (!verifyProduct.data) {
+          return {
+            status: 404,
+            data: null
+          }
       }
 
 
     //VERICANDO SE QUEM ESTA CHAMANDO O END POINT É UM ADMIN OU MASTER DA MSM LOJA QUE O PRODUTO
       const admin = await new AdminService(new AdminRepository()).executeGet(userId);
-      if (!admin || admin.storeId !== verifyProduct.storeId) {
-          return null
+      if (!admin.data || admin.data.storeId !== verifyProduct.data.storeId) {
+          return {
+            status: 403,
+            data: null
+          }
       }
 
     //BUSCANDO O PRODUTO
-      await this.ProductRepository.delete(id)
-      return 
+      const remove = await this.ProductRepository.delete(id)
+      return {
+        data: remove
+      }
 
 
   }
 
 
-  async executeGet(id: string){
+  async executeGet(id: string): Promise<DefaultServicesResponse<Product>>{
 
 
     //VALIDANDO ID
         if (!await new ProductCore().validationId(id)) {
-            return null
+            return {
+              status: 1001,
+              data: null
+            }
         }
 
 
     //BUSCANDO O PRODUTO
         const product = await this.ProductRepository.get(id)
-        return product
+        return {
+          data: product
+        }
 
   }
 
 
-  async executeGetByCategory(category: string){
+  async executeGetByCategory(category: string): Promise<DefaultServicesResponse<Array<Product>>>{
 
 
     //VALIDANDO CATEGORY
       if (!await new ProductCore().validationParams(category)) {
-          return null
+          return {
+            status: 1001,
+            data: null
+          }
       }
 
 
     //BUSCANDO O PRODUTO
       const product = await this.ProductRepository.getByCategory(category)
-      return product
+      return {
+        data: product
+      }
 
   }
 
 
-  async executeAll(){
+  async executeAll()/*: Promise<DefaultServicesResponse<Array<Product>>>*/{
 
     /*
     ...
@@ -202,19 +261,24 @@ class ProductService {
   }
 
 
-  async executeGetByParams(params: string){
+  async executeGetByParams(params: string): Promise<DefaultServicesResponse<Array<Product>>>{
 
 
 
     //VALIDANDO PARAMS
       if (!await new ProductCore().validationParams(params)) {
-        return null
+        return {
+          status: 1001,
+          data: null
+        }
       }
 
 
     //BUSCANDO O PRODUTO
     const product = await this.ProductRepository.getByParams(params)
-    return product
+    return {
+      data: product
+    }
 
   }
 

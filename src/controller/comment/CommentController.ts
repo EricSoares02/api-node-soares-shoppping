@@ -1,11 +1,11 @@
 
 import { Request, Response } from "express";
 import { CommentRepository } from "../../repositories/comment/CommentRepository";
-import { BadRequest, InternalError, Unauthorized } from "../../middleware/errors.express";
-import { ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
+import { NoContent, ResponseGet, ResponseToCreated } from "../../middleware/Response.express";
 import { Comment } from '../../interfaces/comment/comment'
 import { JwtMiddleware } from "../../middleware/Jwt/JwtToken";
 import { CommentService } from "../../services/comments/CommentsService";
+import { DefaultErrorResponseModule } from "../../middleware/@defaultErrorResponseModule/response";
 
 
 
@@ -21,7 +21,7 @@ class CommentController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
         if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
@@ -39,10 +39,10 @@ class CommentController {
 
     //CRIANDO COMMENT
         const create = await new CommentService(new CommentRepository()).executeCreate(data);
-        if (!create) {
-            return new InternalError("Internal Server Error", res).returnError()
+        if (!create.data) {
+            return new DefaultErrorResponseModule(create.status).returnResponse(res)
         }
-        return new ResponseToCreated(create).res(res);
+        return new ResponseToCreated(create.data).res(res);
 
 
   }
@@ -56,7 +56,7 @@ class CommentController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
         if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
@@ -64,10 +64,10 @@ class CommentController {
 
     //ATUALIZANDO COMMENT
         const update = await new CommentService(new CommentRepository()).executeUpdate(req.body);
-        if (!update) {
-            return new InternalError("Internal Server Error", res).returnError()
+        if (!update.data) {
+            return new DefaultErrorResponseModule(update.status).returnResponse(res)
         }
-        return new ResponseToCreated(update).res(res);
+        return new ResponseToCreated(update.data).res(res);
   }
 
 
@@ -78,10 +78,10 @@ class CommentController {
     
     //PROCURANDO COMMENT
         const comments = await new CommentService(new CommentRepository()).executeGetByProduct(req.params.id);
-        if (!comments) {
-            return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!comments.data) {
+            return new DefaultErrorResponseModule(comments.status).returnResponse(res)
         }
-        return new ResponseGet(comments).res(res)
+        return new ResponseGet(comments.data).res(res)
 
   }
 
@@ -95,10 +95,10 @@ class CommentController {
     
     //PROCURANDO COMMENT
         const comments = await new CommentService(new CommentRepository()).executeGet(req.params.id);
-        if (!comments) {
-            return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!comments.data) {
+            return new DefaultErrorResponseModule(comments.status).returnResponse(res)
         }
-        return new ResponseGet(comments).res(res)
+        return new ResponseGet(comments.data).res(res)
 
   }
 
@@ -112,7 +112,7 @@ class CommentController {
     //PEGANDO O ID DO USER QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
         if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
@@ -120,10 +120,10 @@ class CommentController {
     
     //PROCURANDO COMMENT
         const comments = await new CommentService(new CommentRepository()).executeGetByUser(id);
-        if (!comments) {
-            return new BadRequest('Something Is Wrong!',res).returnError()
+        if (!comments.data) {
+            return new DefaultErrorResponseModule(comments.status).returnResponse(res)
         }
-        return new ResponseGet(comments).res(res)
+        return new ResponseGet(comments.data).res(res)
 
   }
 
@@ -134,7 +134,7 @@ class CommentController {
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
         const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
         if(!id){
-            return new Unauthorized('Token Is Required!',res).returnError()
+            return new DefaultErrorResponseModule(401).returnResponse(res)
         }
 
 
@@ -142,10 +142,12 @@ class CommentController {
 
     //DELETANDO COMMENT
         const del = await new CommentService(new CommentRepository()).executeDelete(req.params.id, id);
-        if (!del) {
-            return new BadRequest("Something Is Wrong!", res).returnError()
-        }
-        return 
+
+        if (!del.data) {
+            return new DefaultErrorResponseModule(del.status).returnResponse(res)
+            }
+    
+            return new NoContent().res(res)
 
   }
 
