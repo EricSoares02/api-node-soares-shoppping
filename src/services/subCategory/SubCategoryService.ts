@@ -42,7 +42,7 @@ class SubCategoryService {
         const category = await new CategoryService(new CategoryRepository()).executeGet(data.categoryId) 
         if (!category.data) {
             return {
-                status: 400,
+                status: 404,
                 data: null
             }
         }
@@ -100,7 +100,7 @@ class SubCategoryService {
         }
     
     //ATUALIZANDO  A SUBCATEGORIA
-        const updated = await this.SubCategoryRepository.create(data)
+        const updated = await this.SubCategoryRepository.update(data)
         return {
             data: updated
         }
