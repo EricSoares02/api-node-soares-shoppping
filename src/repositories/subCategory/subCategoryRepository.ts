@@ -18,12 +18,13 @@ class SubCategoryRepository implements ISubCategoryRepository {
     }
 
 
-    async update(data: SubCategory): Promise<SubCategory> {
+    async update(dataa: SubCategory): Promise<SubCategory> {
         connect();
+        const { id: id, ...data} = dataa
         const createdSubCategory = await prisma.subcategory
             .update({
                 where:{
-                id: data.id
+                id
                 },
             data,
             })
