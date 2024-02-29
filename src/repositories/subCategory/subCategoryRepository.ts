@@ -64,17 +64,17 @@ class SubCategoryRepository implements ISubCategoryRepository {
     }
 
 
-    async delete(id: string): Promise<void> {
+    async delete(id: string): Promise<SubCategory> {
         connect();
-        const createdSubCategory = await prisma.subcategory
+        const remove = await prisma.subcategory
             .delete({
                 where:{
                 id
                 }
             })
         .finally(diconnect);
-        createdSubCategory
-        return 
+        
+        return remove
     }
 
 }

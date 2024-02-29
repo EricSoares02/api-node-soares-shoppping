@@ -158,7 +158,7 @@ class SubCategoryService {
   }
 
 
-  async executeDelete(id: string, elderId: string): Promise<DefaultServicesResponse<void>>{
+  async executeDelete(id: string, elderId: string): Promise<DefaultServicesResponse<SubCategory>>{
 
 
     //VALIDANDO O ID

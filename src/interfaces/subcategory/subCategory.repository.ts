@@ -10,5 +10,5 @@ export interface ISubCategoryRepository{
 
     checkByCategory(name: string, nameCategory:string): Promise<SubCategory | null>
 
-    delete(id: string): Promise<void>
+    delete(id: string): Promise<SubCategory>
 }
