@@ -30,7 +30,7 @@ router.delete('/category/:id', new CategoryController().delete);
 router.post('/subcategory', new SubCategoryController().create);
 router.patch('/subcategory', new SubCategoryController().update);
 router.get('/subcategory/:id', new SubCategoryController().get);
-router.get('/subcategory/name/:name', new SubCategoryController().checkByCategory);
+router.get('/subcategory/get/getbyname', new SubCategoryController().checkByCategory);
 router.delete('/subcategory', new SubCategoryController().delete);
 
 
