@@ -78,7 +78,7 @@ router.post('/store', new StoreController().create);
 router.patch('/store', new StoreController().update);
 router.get('/store/:id', new StoreController().get);
 router.get('/store/cnpj/:cnpj', new StoreController().getByCnpj);
-router.delete('/store', new StoreController().delete);
+router.delete('/store/:id', new StoreController().delete);
 
 
 

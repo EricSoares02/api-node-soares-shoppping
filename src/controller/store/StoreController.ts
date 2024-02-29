@@ -74,14 +74,20 @@ async getByCnpj(req: Request, res: Response){
 
 async delete(req: Request, res: Response){
         
+    //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
+        const id = new JwtMiddleware(req.headers.authorization ?? '').GetIdByToken();
+        if(!id){
+            return new DefaultErrorResponseModule(401).returnResponse(res)
+        }
 
+        
     //BUSCANDO A STORE
-    const store = await new StoreService(new StoreRepository()).executeDelete(req.params.id)
-    if (!store.data) {
-        return new DefaultErrorResponseModule(store.status).returnResponse(res)
-    }
+        const store = await new StoreService(new StoreRepository()).executeDelete(req.params.id, id)
+        if (!store.data) {
+            return new DefaultErrorResponseModule(store.status).returnResponse(res)
+        }
     
-    return new NoContent().res(res)
+        return new NoContent().res(res)
 }
 
 }
