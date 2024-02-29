@@ -76,7 +76,7 @@ class SubCategoryController {
 
   }
 
-  async delete(req: Request<'', '', SubCategory>, res: Response){
+  async delete(req: Request, res: Response){
 
 
     //PEGANDO O ID DO CRIADOR QUE VEM NO TOKEN
@@ -87,7 +87,7 @@ class SubCategoryController {
 
 
     //DELETANDO SUBCATEGORY
-       const del = await new SubCategoryService(new SubCategoryRepository()).executeDelete(req.body.id, id);
+       const del = await new SubCategoryService(new SubCategoryRepository()).executeDelete(req.params.id, id);
        
         if (!del.data) {
             return new DefaultErrorResponseModule(del.status).returnResponse(res)
