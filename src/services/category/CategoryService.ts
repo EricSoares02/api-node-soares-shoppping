@@ -34,7 +34,8 @@ class CategoryService {
             }
 
         //VERIFICANDO SE QUEM ESTA TENTANDO FAZER A OPERAÇÃO É UM ELDER
-            if (!await new ElderService(new ElderRepository()).executeGet(id)) {
+            const elder = await new ElderService(new ElderRepository()).executeGet(id)
+            if (!elder.data) {
                 return {
                     status: 403,
                     data: null
@@ -69,7 +70,8 @@ class CategoryService {
             }
 
         //VERIFICANDO SE QUEM ESTA TENTANDO FAZER A OPERAÇÃO É UM ELDER
-            if (!await new ElderService(new ElderRepository()).executeGet(id)) {
+            const elder = await new ElderService(new ElderRepository()).executeGet(id)
+            if (!elder.data) {
                 return {
                     status: 403,
                     data: null
@@ -149,7 +151,8 @@ class CategoryService {
         
 
         //VERIFICANDO SE QUEM ESTA TENTANDO FAZER A OPERAÇÃO É UM ELDER
-            if (!await new ElderService(new ElderRepository()).executeGet(elderId)) {
+            const elder = await new ElderService(new ElderRepository()).executeGet(elderId);
+            if (!elder.data) {
                 return {
                     status: 403,
                     data: null
