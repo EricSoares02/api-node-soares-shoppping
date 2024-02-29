@@ -31,7 +31,7 @@ router.post('/subcategory', new SubCategoryController().create);
 router.patch('/subcategory', new SubCategoryController().update);
 router.get('/subcategory/:id', new SubCategoryController().get);
 router.get('/subcategory/get/getbyname', new SubCategoryController().checkByCategory);
-router.delete('/subcategory', new SubCategoryController().delete);
+router.delete('/subcategory/:id', new SubCategoryController().delete);
 
 
 
