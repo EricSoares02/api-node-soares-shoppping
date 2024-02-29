@@ -61,7 +61,7 @@ class CategoryService {
             }
 
         //VERIFICANDO SE A CATEGORIA EXISTE
-            const category = await this.executeGetByName(data.name);
+            const category = await this.executeGet(data.id);
             if (!category.data) {
                 return {
                     status: 404,
