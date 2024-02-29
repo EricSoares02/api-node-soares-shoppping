@@ -26,7 +26,8 @@ class StoreService {
 
 
     //VERIFICANDO SE QUEM ESTÁ CHAMANDO O END POINT É UM ELDER
-        if (!await new ElderService(new ElderRepository()).executeGet(elderId)) {
+        const elder = await new ElderService(new ElderRepository()).executeGet(elderId)
+        if (!elder.data) {
             return {
               status: 403,
               data: null
@@ -91,7 +92,7 @@ class StoreService {
            }
         }
 
-        if (!user) {
+        if (!user.data) {
           return {
             status: 403,
             data: null
@@ -163,7 +164,7 @@ class StoreService {
   }
 
 
-  async executeDelete(id: string): Promise<DefaultServicesResponse<void>>  {
+  async executeDelete(id: string, elderId: string): Promise<DefaultServicesResponse<Store>>  {
 
 
     //VALIDANDO O ID
@@ -178,12 +179,32 @@ class StoreService {
     
     //VERIFICANDO SE A STORE EXISTE
 
-          if(!await this.executeGet(id)){
+          if(!(await this.executeGet(id)).data){
             return {
               status: 404,
               data: null
             }
           }
+
+
+    //VALIDANDO O ID
+
+        if (!await new StoreCore().validationId(elderId)) {
+          return {
+            status: 1001,
+            data: null
+          }
+        }
+
+    //VERIFICANDO SE QUEM ESTÁ CHAMANDO O END POINT É UM ELDER
+        const elder = await new ElderService(new ElderRepository()).executeGet(elderId)
+        if (!elder.data) {
+            return {
+              status: 403,
+              data: null
+            }
+        }
+
 
     //DELETANDO A STORE
         const remove = await this.StoreRepository.delete(id);
