@@ -37,9 +37,9 @@ class LoginMiddleware{
         
         let user = await new UserService(new UserRepository()).executeLogin(this.email)
 
-        if (!user) {
+        if (!user.data) {
             user = await new AdminService(new AdminRepository()).executeLogin(this.email);
-            if (!user) {
+            if (!user.data) {
                 user = await new ElderService(new ElderRepository()).executeLogin(this.email)
             }
         }
@@ -53,7 +53,7 @@ class LoginMiddleware{
         const user = await this.searchUser();
         
         if(!user?.data){
-            return user?.data 
+            return null 
         }
 
         const passwordIsEqual = await new BcryptMiddlewareMod(this.password).comparePassword(user.data.password ?? '')
