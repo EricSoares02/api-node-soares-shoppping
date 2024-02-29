@@ -23,8 +23,8 @@ class SubCategoryCore {
     return await new ZodValidationData(SubCategorySchema, data).parse();
   }
 
-  async validationName(name: string) {
-    return await new ZodValidationData(NameSchema, name).parse();
+  async validationName(data: string) {
+    return await new ZodValidationData(NameSchema, data).parse();
   }
 
 }
