@@ -53,7 +53,7 @@ class CategoryService {
     async executeUpdate(data: Category, id: string): Promise<DefaultServicesResponse<Category>>{
 
         // VALIDANDO OS DADOS
-            if (!await new CategoryCore().validationData(data)) {
+            if (!await new CategoryCore().validationDataToUpdate(data)) {
                 return {
                     status: 1001,
                     data: null
