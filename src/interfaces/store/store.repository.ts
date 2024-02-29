@@ -10,6 +10,6 @@ export interface IStoreRepository {
 
     getByCnpj(cnpj:string): Promise<Store | null>
 
-    delete(id: string): Promise<void>
+    delete(id: string): Promise<Store>
 
 }

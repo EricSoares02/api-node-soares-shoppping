@@ -5,18 +5,14 @@ import { prisma } from "../../services/prisma/prisma";
 
 class StoreRepository implements IStoreRepository {
   
-  async create(data: Store): Promise<Store> {
+  async create(dataa: Store): Promise<Store> {
 
         connect();
-        const { cnpj, desc, name, photo} = data
+        const { id: id, ...data} = dataa;
+        id
         const createStore = await prisma.store
         .create({
-            data: {
-                cnpj,
-                desc,
-                name,
-                photo
-            }
+            data
         })
         .finally(diconnect);
 
@@ -64,15 +60,14 @@ class StoreRepository implements IStoreRepository {
   }
 
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Store> {
       
         connect()
         const store = await prisma.store.delete({
             where: {id}
         }).finally( diconnect )
 
-        store
-        return 
+        return store
   }
 
 }
